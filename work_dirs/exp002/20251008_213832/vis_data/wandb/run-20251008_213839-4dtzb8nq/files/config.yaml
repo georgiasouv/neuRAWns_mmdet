@@ -1,0 +1,497 @@
+_wandb:
+    value:
+        cli_version: 0.22.1
+        code_path: source-rod-raw-preprocessing-None
+        e:
+            v8puen9ayf0ae2plpb3i8qmmuthcw6se:
+                args:
+                    - configs/raw_experiments/exp002.py
+                    - --launcher
+                    - none
+                cpu_count: 10
+                cpu_count_logical: 20
+                cudaVersion: "12.8"
+                disk:
+                    /:
+                        total: "1003736440832"
+                        used: "259649216512"
+                email: georgiasouval@gmail.com
+                executable: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/anaconda3/envs/mmdet12/bin/python3.10
+                gpu: Quadro RTX 5000
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Turing
+                      cudaCores: 3072
+                      memoryTotal: "17179869184"
+                      name: Quadro RTX 5000
+                      uuid: GPU-371dd78f-632e-4428-d8db-e24031b9c2ba
+                host: wmgubws28.wmgds.wmg.warwick.ac.uk
+                memory:
+                    total: "67094106112"
+                os: Linux-6.14.0-32-generic-x86_64-with-glibc2.39
+                program: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/Desktop/mmdetection/mmdet/.mim/tools/train.py
+                python: CPython 3.10.12
+                root: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/Desktop/neuRAWns_mmdet/work_dirs/exp002/20251008_213832/vis_data
+                startedAt: "2025-10-08T20:38:39.912024Z"
+                writerId: v8puen9ayf0ae2plpb3i8qmmuthcw6se
+        m: []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 1
+                - 37
+                - 38
+                - 41
+                - 51
+                - 82
+            "2":
+                - 1
+                - 37
+                - 38
+                - 41
+                - 51
+                - 82
+            "3":
+                - 13
+                - 16
+            "4": 3.10.12
+            "5": 0.22.1
+            "12": 0.22.1
+            "13": linux-x86_64
+architecture:
+    value: faster-rcnn-r50
+auto_scale_lr:
+    value:
+        base_batch_size: 16
+        enable: false
+classes:
+    value:
+        - Car
+        - Cyclist
+        - Pedestrian
+        - Tram
+        - Truck
+custom_imports:
+    value:
+        allow_failed_imports: false
+        imports:
+            - modules.exp002_learnable_isp_v1
+            - modules.raw_backbones.raw_resnet
+            - datasets.pipelines.loading
+data_root:
+    value: /cifs/Shares/Raw_Bayer_Datasets/ROD/
+dataset:
+    value: ROD
+dataset_type:
+    value: CocoDataset
+default_hooks:
+    value:
+        checkpoint:
+            interval: 1
+            type: CheckpointHook
+        logger:
+            interval: 50
+            type: LoggerHook
+        param_scheduler:
+            type: ParamSchedulerHook
+        sampler_seed:
+            type: DistSamplerSeedHook
+        timer:
+            type: IterTimerHook
+        visualization:
+            type: DetVisualizationHook
+default_scope:
+    value: mmdet
+env_cfg:
+    value:
+        cudnn_benchmark: false
+        dist_cfg:
+            backend: nccl
+        mp_cfg:
+            mp_start_method: fork
+            opencv_num_threads: 0
+launcher:
+    value: none
+load_from:
+    value: null
+log_level:
+    value: INFO
+log_processor:
+    value:
+        by_epoch: true
+        type: LogProcessor
+        window_size: 50
+model:
+    value:
+        backbone:
+            depth: 50
+            frozen_stages: 1
+            init_cfg:
+                checkpoint: torchvision://resnet50
+                type: Pretrained
+            norm_cfg:
+                requires_grad: true
+                type: BN
+            norm_eval: true
+            num_stages: 4
+            out_indices:
+                - 0
+                - 1
+                - 2
+                - 3
+            preprocess_cfg:
+                in_channels: 4
+                norm_threshold: 0.99
+                out_channels: 3
+                type: RAWPreprocess_v1
+            style: pytorch
+            type: RAW_ResNet
+        data_preprocessor:
+            bgr_to_rgb: false
+            mean:
+                - 0
+                - 0
+                - 0
+            pad_size_divisor: 32
+            std:
+                - 1
+                - 1
+                - 1
+            type: DetDataPreprocessor
+        neck:
+            in_channels:
+                - 256
+                - 512
+                - 1024
+                - 2048
+            num_outs: 5
+            out_channels: 256
+            type: FPN
+        roi_head:
+            bbox_head:
+                bbox_coder:
+                    target_means:
+                        - 0
+                        - 0
+                        - 0
+                        - 0
+                    target_stds:
+                        - 0.1
+                        - 0.1
+                        - 0.2
+                        - 0.2
+                    type: DeltaXYWHBBoxCoder
+                fc_out_channels: 1024
+                in_channels: 256
+                loss_bbox:
+                    loss_weight: 1
+                    type: L1Loss
+                loss_cls:
+                    loss_weight: 1
+                    type: CrossEntropyLoss
+                    use_sigmoid: false
+                num_classes: 5
+                reg_class_agnostic: false
+                roi_feat_size: 7
+                type: Shared2FCBBoxHead
+            bbox_roi_extractor:
+                featmap_strides:
+                    - 4
+                    - 8
+                    - 16
+                    - 32
+                out_channels: 256
+                roi_layer:
+                    output_size: 7
+                    sampling_ratio: 0
+                    type: RoIAlign
+                type: SingleRoIExtractor
+            type: StandardRoIHead
+        rpn_head:
+            anchor_generator:
+                ratios:
+                    - 0.5
+                    - 1
+                    - 2
+                scales:
+                    - 8
+                strides:
+                    - 4
+                    - 8
+                    - 16
+                    - 32
+                    - 64
+                type: AnchorGenerator
+            bbox_coder:
+                target_means:
+                    - 0
+                    - 0
+                    - 0
+                    - 0
+                target_stds:
+                    - 1
+                    - 1
+                    - 1
+                    - 1
+                type: DeltaXYWHBBoxCoder
+            feat_channels: 256
+            in_channels: 256
+            loss_bbox:
+                loss_weight: 1
+                type: L1Loss
+            loss_cls:
+                loss_weight: 1
+                type: CrossEntropyLoss
+                use_sigmoid: true
+            type: RPNHead
+        test_cfg:
+            rcnn:
+                max_per_img: 100
+                nms:
+                    iou_threshold: 0.5
+                    type: nms
+                score_thr: 0.05
+            rpn:
+                max_per_img: 1000
+                min_bbox_size: 0
+                nms:
+                    iou_threshold: 0.7
+                    type: nms
+                nms_pre: 1000
+        train_cfg:
+            rcnn:
+                assigner:
+                    ignore_iof_thr: -1
+                    match_low_quality: false
+                    min_pos_iou: 0.5
+                    neg_iou_thr: 0.5
+                    pos_iou_thr: 0.5
+                    type: MaxIoUAssigner
+                debug: false
+                pos_weight: -1
+                sampler:
+                    add_gt_as_proposals: true
+                    neg_pos_ub: -1
+                    num: 512
+                    pos_fraction: 0.25
+                    type: RandomSampler
+            rpn:
+                allowed_border: -1
+                assigner:
+                    ignore_iof_thr: -1
+                    match_low_quality: true
+                    min_pos_iou: 0.3
+                    neg_iou_thr: 0.3
+                    pos_iou_thr: 0.7
+                    type: MaxIoUAssigner
+                debug: false
+                pos_weight: -1
+                sampler:
+                    add_gt_as_proposals: false
+                    neg_pos_ub: -1
+                    num: 256
+                    pos_fraction: 0.5
+                    type: RandomSampler
+            rpn_proposal:
+                max_per_img: 1000
+                min_bbox_size: 0
+                nms:
+                    iou_threshold: 0.7
+                    type: nms
+                nms_pre: 2000
+        type: FasterRCNN
+optim_wrapper:
+    value:
+        optimizer:
+            lr: 0.02
+            momentum: 0.9
+            type: SGD
+            weight_decay: 0.0001
+        type: OptimWrapper
+param_scheduler:
+    value:
+        - begin: 0
+          by_epoch: false
+          end: 500
+          start_factor: 0.001
+          type: LinearLR
+        - begin: 0
+          by_epoch: true
+          end: 12
+          gamma: 0.1
+          milestones:
+            - 8
+            - 11
+          type: MultiStepLR
+preprocessing:
+    value: raw-learnable
+resume:
+    value: false
+test_cfg:
+    value:
+        type: TestLoop
+test_dataloader:
+    value:
+        batch_size: 1
+        dataset:
+            ann_file: json_raw/test.json
+            data_prefix:
+                img: raw/test/
+            data_root: /cifs/Shares/Raw_Bayer_Datasets/ROD/
+            metainfo:
+                classes:
+                    - Car
+                    - Cyclist
+                    - Pedestrian
+                    - Tram
+                    - Truck
+            pipeline:
+                - type: LoadRAWImageFromFile
+                - keep_ratio: true
+                  scale:
+                    - 1333
+                    - 800
+                  type: Resize
+                - type: PackDetInputs
+            type: CocoDataset
+        drop_last: false
+        num_workers: 2
+        persistent_workers: true
+        sampler:
+            shuffle: false
+            type: DefaultSampler
+test_evaluator:
+    value:
+        ann_file: /cifs/Shares/Raw_Bayer_Datasets/ROD/json_raw/test.json
+        format_only: false
+        metric: bbox
+        type: CocoMetric
+test_pipeline:
+    value:
+        - type: LoadRAWImageFromFile
+        - keep_ratio: true
+          scale:
+            - 1333
+            - 800
+          type: Resize
+        - type: PackDetInputs
+train_cfg:
+    value:
+        max_epochs: 12
+        type: EpochBasedTrainLoop
+        val_interval: 1
+train_dataloader:
+    value:
+        batch_size: 4
+        dataset:
+            ann_file: json_raw/train.json
+            data_prefix:
+                img: raw/train/
+            data_root: /cifs/Shares/Raw_Bayer_Datasets/ROD/
+            filter_cfg:
+                filter_empty_gt: true
+                min_size: 32
+            metainfo:
+                classes:
+                    - Car
+                    - Cyclist
+                    - Pedestrian
+                    - Tram
+                    - Truck
+            pipeline:
+                - type: LoadRAWImageFromFile
+                - type: LoadAnnotations
+                  with_bbox: true
+                - keep_ratio: true
+                  scale:
+                    - 1333
+                    - 800
+                  type: Resize
+                - prob: 0.5
+                  type: RandomFlip
+                - type: PackDetInputs
+            type: CocoDataset
+        num_workers: 2
+        persistent_workers: true
+        sampler:
+            shuffle: true
+            type: DefaultSampler
+train_pipeline:
+    value:
+        - type: LoadRAWImageFromFile
+        - type: LoadAnnotations
+          with_bbox: true
+        - keep_ratio: true
+          scale:
+            - 1333
+            - 800
+          type: Resize
+        - prob: 0.5
+          type: RandomFlip
+        - type: PackDetInputs
+val_cfg:
+    value:
+        type: ValLoop
+val_dataloader:
+    value:
+        batch_size: 1
+        dataset:
+            ann_file: json_raw/val.json
+            data_prefix:
+                img: raw/val/
+            data_root: /cifs/Shares/Raw_Bayer_Datasets/ROD/
+            metainfo:
+                classes:
+                    - Car
+                    - Cyclist
+                    - Pedestrian
+                    - Tram
+                    - Truck
+            pipeline:
+                - type: LoadRAWImageFromFile
+                - keep_ratio: true
+                  scale:
+                    - 1333
+                    - 800
+                  type: Resize
+                - type: PackDetInputs
+            type: CocoDataset
+        drop_last: false
+        num_workers: 2
+        persistent_workers: true
+        sampler:
+            shuffle: false
+            type: DefaultSampler
+val_evaluator:
+    value:
+        ann_file: /cifs/Shares/Raw_Bayer_Datasets/ROD/json_raw/val.json
+        format_only: false
+        metric: bbox
+        type: CocoMetric
+vis_backends:
+    value:
+        - type: LocalVisBackend
+        - init_kwargs:
+            config:
+                architecture: faster-rcnn-r50
+                dataset: ROD
+                preprocessing: raw-learnable
+            name: exp002
+            project: rod-raw-preprocessing
+          type: WandbVisBackend
+visualizer:
+    value:
+        name: visualizer
+        type: DetLocalVisualizer
+        vis_backends:
+            - type: LocalVisBackend
+            - init_kwargs:
+                config:
+                    architecture: faster-rcnn-r50
+                    dataset: ROD
+                    preprocessing: raw-learnable
+                name: exp002
+                project: rod-raw-preprocessing
+              type: WandbVisBackend
+work_dir:
+    value: ./work_dirs/exp002

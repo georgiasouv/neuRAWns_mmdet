@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+
+# MMDetection / Training Outputs
+work_dirs/
+
+# VSCode
+.vscode/
+
+# Other common ignores
+.DS_Store

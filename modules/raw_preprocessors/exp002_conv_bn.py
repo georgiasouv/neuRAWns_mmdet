@@ -4,7 +4,7 @@ from .base_preprocessor import BasePreprocessor
 from mmdet.registry import MODELS
 
 @MODELS.register_module()
-class RAWPreprocess_v1(BasePreprocessor):
+class Exp002ConvBN(BasePreprocessor):
     def __init__(self, in_channels=4, out_channels=3, norm_threshold=0.95):
         super().__init__()
         self.in_channels = in_channels

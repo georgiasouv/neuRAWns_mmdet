@@ -6,12 +6,16 @@ classes = (
     'Tram',
     'Truck',
 )
+custom_hooks = [
+    dict(priority='VERY_HIGH', type='FreezeDetectorHook'),
+]
 custom_imports = dict(
     allow_failed_imports=False,
     imports=[
-        'modules.exp002_learnable_isp_v1',
-        'modules.raw_backbones.raw_resnet',
-        'datasets.pipelines.loading',
+        'modules.raw_preprocessors',
+        'modules.raw_backbones',
+        'modules.hooks',
+        'datasets.pipelines',
     ])
 data_root = '/cifs/Shares/Raw_Bayer_Datasets/ROD/'
 dataset_type = 'CocoDataset'
@@ -49,9 +53,9 @@ model = dict(
             in_channels=4,
             norm_threshold=0.99,
             out_channels=3,
-            type='RAWPreprocess_v1'),
+            type='Exp002ConvBN'),
         style='pytorch',
-        type='RAW_ResNet'),
+        type='RAWResNet'),
     data_preprocessor=dict(
         bgr_to_rgb=False,
         mean=None,

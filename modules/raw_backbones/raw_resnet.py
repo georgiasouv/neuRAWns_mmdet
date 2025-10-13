@@ -3,7 +3,7 @@ from mmdet.registry import MODELS
 from mmdet.models.backbones import ResNet
 
 @MODELS.register_module()
-class RAW_ResNet(nn.Module):
+class RAWResNet(nn.Module):
     def __init__(self,
                  preprocess_cfg=dict(
                      type='RAWPreprocess_v1',

@@ -1,7 +1,10 @@
 custom_imports = dict(
-    imports=['modules.exp002_learnable_isp_v1',
-             'modules.raw_backbones.raw_resnet',
-             'datasets.pipelines.loading'],
+    imports=[
+        'modules.raw_preprocessors',
+        'modules.raw_backbones',
+        'modules.hooks',
+        'datasets.pipelines'
+    ],
     allow_failed_imports=False
 )
 
@@ -10,7 +13,57 @@ _base_ = [
     '../_base_/default_runtime.py'
 ]
 
-# Dataset settings
+# Optimizer - CRITICAL for your small trainable module
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(
+        type='AdamW',        # Good for small modules
+        lr=0.001,            # Learning rate - START HERE, adjust if needed
+        weight_decay=0.01
+    ),
+    clip_grad=dict(max_norm=35, norm_type=2)  # Gradient clipping
+)
+
+# Learning rate schedule
+param_scheduler = [
+    dict(
+        type='LinearLR',
+        start_factor=0.001,
+        by_epoch=False,
+        begin=0,
+        end=500           # Warmup iterations
+    ),
+    dict(
+        type='MultiStepLR',
+        by_epoch=True,
+        milestones=[8, 11],  # Drop LR at these epochs
+        gamma=0.1
+    )
+]
+
+# Training schedule
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=100,           # Total epochs - adjust based on convergence
+    val_interval=1           # Validate every epoch
+)
+
+val_cfg = dict(type='ValLoop')
+test_cfg = dict(type='TestLoop')
+
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=1,                    # Save every epoch
+        max_keep_ckpts=3,              # Keep last 3 (in case of crashes)
+        save_best='auto',              # Save best model
+        rule='greater'                 # Higher mAP = better (default, but explicit)
+    ),
+    logger=dict(
+        type='LoggerHook',
+        interval=50                    # Log every 50 iterations
+    )
+)
 dataset_type = 'CocoDataset'
 data_root = '/cifs/Shares/Raw_Bayer_Datasets/ROD/'
 classes = ('Car', 'Cyclist', 'Pedestrian', 'Tram', 'Truck')
@@ -86,8 +139,6 @@ test_evaluator = dict(
 
 model = dict(
     type='FasterRCNN',
-    
-    
     data_preprocessor=dict(
         type='DetDataPreprocessor',
         mean=None,      
@@ -95,11 +146,10 @@ model = dict(
         bgr_to_rgb=False,          
         pad_size_divisor=32        
     ),
-    
     backbone=dict(
-        type='RAW_ResNet',  
+        type='RAWResNet',  
         preprocess_cfg=dict(
-            type='RAWPreprocess_v1',
+            type='Exp002ConvBN',
             in_channels=4,
             out_channels=3,
             norm_threshold=0.99
@@ -113,16 +163,12 @@ model = dict(
         style='pytorch',
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')
     ),
-    
-    # Feature Pyramid Network
     neck=dict(
         type='FPN',
         in_channels=[256, 512, 1024, 2048],  # ResNet-50 output channels
         out_channels=256,
         num_outs=5
     ),
-    
-    # Region Proposal Network
     rpn_head=dict(
         type='RPNHead',
         in_channels=256,
@@ -143,8 +189,6 @@ model = dict(
         ),
         loss_bbox=dict(type='L1Loss', loss_weight=1.0)
     ),
-    
-    # RoI Head (detection head)
     roi_head=dict(
         type='StandardRoIHead',
         bbox_roi_extractor=dict(
@@ -236,6 +280,10 @@ model = dict(
         )
     )
 )
+
+custom_hooks = [
+    dict(type='FreezeDetectorHook', priority='VERY_HIGH')
+]
 
 vis_backends = [
     dict(type='LocalVisBackend'),

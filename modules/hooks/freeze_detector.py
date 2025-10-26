@@ -3,9 +3,16 @@ from mmengine.registry import HOOKS
 
 @HOOKS.register_module()
 class FreezeDetectorHook(Hook):
-    def __init__(self, priority='VERY_HIGH'):
+    def __init__(self, 
+                 priority='VERY_HIGH',
+                 debug_mode=False,
+                 check_updates=False):
         super().__init__()
         self.priority = priority
+        self.debug_mode = debug_mode
+        self.check_updates= check_updates
+        self.initial_weights = {}
+        self.initial_detector_weights = {}
         
     def before_train(self, runner): # Runs once AFTER model initialization & weight loading, but BEFORE the first training iteration.  
         model = runner.model
@@ -39,19 +46,18 @@ class FreezeDetectorHook(Hook):
                 f"{'='*70}\n"
             )
             
-            # List trainable modules for verification
-            runner.logger.info("Trainable modules:")
-            for name, param in model.named_parameters():
-                if param.requires_grad:
-                    runner.logger.info(f"  - {name}: {param.numel():,} params")
-            runner.logger.info(f"{'='*70}\n")
-            
+            if self.debug_mode:
+                runner.logger.info("[DEBUG] Trainable modules:")
+                for name, param in model.named_parameters():
+                    if param.requires_grad:
+                        runner.logger.info( f"  ✓ {name}: {param.numel():,} params, shape={tuple(param.shape)}")
+
+                
             if trainable_params > 50000:    # Sanity check 1 - fail fast if freezing didn't work
                 raise RuntimeError(
                     f"Freezing failed! {trainable_params:,} trainable parameters "
                     f"(expected < 50,000). Check your model structure."
                 )
-            
             
             if trainable_params == 0:    # Sanity check 2 - make sure something is trainable
                 raise RuntimeError(
@@ -64,5 +70,50 @@ class FreezeDetectorHook(Hook):
                 "Check your backbone configuration. "
                 "Expected: model.backbone.preprocessor to exist."
             )
+        
+        if self.check_updates:
+            runner.logger.info("\n[DEBUG] Storing initial weights...")
+            
+            # Store preprocessor weights
+            for name, param in model.backbone.preprocessor.named_parameters():
+                if param.requires_grad:
+                    self.initial_weights[name] = param.data.clone()
+            
+                # Store a few detector weights for comparison
+                for name, param in list(model.backbone.resnet.named_parameters())[:2]:
+                    self.initial_detector_weights[name] = param.data.clone()
+                
+                runner.logger.info("[DEBUG] Weights stored for comparison.\n")
 
-    
+    def after_train_epoch(self, runner):
+        """Check if weights updated - only if enabled."""
+        if not self.check_updates:
+            return  # Skip entirely if not checking
+        
+        model = runner.model
+        if hasattr(model, 'module'):
+            model = model.module
+        
+        runner.logger.info(
+            f"\n{'='*70}\n"
+            f"[DEBUG] Weight Update Check - Epoch {runner.epoch}\n"
+            f"{'='*70}\n"
+        )
+        
+        # Check preprocessor changed
+        runner.logger.info("[DEBUG] Preprocessor (should CHANGE):")
+        for name, param in model.backbone.preprocessor.named_parameters():
+            if name in self.initial_weights:
+                diff = (param.data - self.initial_weights[name]).abs().mean().item()
+                status = '✓ CHANGED' if diff > 1e-6 else '✗ NOT CHANGED'
+                runner.logger.info(f"  {name}: diff={diff:.8f} {status}")
+        
+        # Check detector frozen
+        runner.logger.info("\n[DEBUG] Detector (should NOT CHANGE):")
+        for name, param in list(model.backbone.resnet.named_parameters())[:2]:
+            if name in self.initial_detector_weights:
+                diff = (param.data - self.initial_detector_weights[name]).abs().mean().item()
+                status = '✓ FROZEN' if diff < 1e-8 else '✗ CHANGED!'
+                runner.logger.info(f"  {name}: diff={diff:.8f} {status}")
+        
+        runner.logger.info(f"{'='*70}\n")

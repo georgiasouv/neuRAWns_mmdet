@@ -1,4 +1,3 @@
-exp_name = 'exp002'
 DEBUG_MODE = True  
 
 custom_imports = dict(
@@ -13,6 +12,9 @@ custom_imports = dict(
 _base_ = [
      'mmdet::faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'
 ]
+
+# Load pretrained detector from exp001 (RGB baseline)
+load_from = '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp001_faster_rcnn_r50_fpn/best_coco_bbox_mAP_epoch_19.pth'
 
 # Dataset settings
 dataset_type = 'CocoDataset'
@@ -88,8 +90,8 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='json_raw/test.json',  # Different annotation file
-        data_prefix=dict(img='raw/test/'),  # Different image folder
+        ann_file='json_raw/test.json',
+        data_prefix=dict(img='raw/test/'),
         pipeline=test_pipeline,
         metainfo=dict(classes=classes)))
 
@@ -126,16 +128,16 @@ model = dict(
         ),
         depth=50,
         num_stages=4,
-        out_indices=(0, 1, 2, 3),  # Output C2, C3, C4, C5
-        frozen_stages=1,            # Freeze conv1 + C2 (first 2 stages)
+        out_indices=(0, 1, 2, 3),
+        frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
-        norm_eval=True,             # Keep BN in eval mode
+        norm_eval=True,
         style='pytorch',
         init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')
     ),
     neck=dict(
         type='FPN',
-        in_channels=[256, 512, 1024, 2048],  # ResNet-50 output channels
+        in_channels=[256, 512, 1024, 2048],
         out_channels=256,
         num_outs=5
     ),
@@ -172,7 +174,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=5,  # Your 5 classes
+            num_classes=5,
             bbox_coder=dict(
                 type='DeltaXYWHBBoxCoder',
                 target_means=[0.0, 0.0, 0.0, 0.0],
@@ -186,7 +188,6 @@ model = dict(
         )
     ),
     
-    # Training config
     train_cfg=dict(
         rpn=dict(
             assigner=dict(
@@ -235,7 +236,6 @@ model = dict(
         )
     ),
     
-    # Test config
     test_cfg=dict(
         rpn=dict(
             nms_pre=1000,
@@ -254,23 +254,33 @@ model = dict(
 default_hooks = dict(
     checkpoint=dict(
         type='CheckpointHook',
-        interval=1,                    # Save every epoch
-        max_keep_ckpts=2,             # Keep only last 3 checkpoints
-        save_best='coco/bbox_mAP',    # Also save best mAP checkpoint
-        rule='greater'                 # Higher mAP is better
+        interval=1,
+        max_keep_ckpts=2,
+        save_best='coco/bbox_mAP',
+        rule='greater'
     )
-    
 )
 
-# custom_hooks is a list because you're adding new hooks that don't exist in the defaults
-#
 custom_hooks = [
+    dict(
+        type='FreezeDetectorHook',
+        debug_mode=DEBUG_MODE,
+        check_updates=DEBUG_MODE,
+        priority='VERY_HIGH'
+    ),
     dict(
         type='EarlyStoppingHook',
         monitor='coco/bbox_mAP',
         patience=10,
         rule='greater',
         min_delta=0.001
+    ),
+    dict(
+        type='SaveBatchImagesHook',
+        save_dir='sample_images',
+        experiment_name='exp003',
+        save_raw=True,
+        save_preprocessed=True
     )
 ]
 
@@ -280,11 +290,11 @@ vis_backends = [
     dict(type='WandbVisBackend',
          init_kwargs={
              'project': 'neuRAWns-mmdet-ROD',
-             'name': exp_name,                          # ===============================================================================================
+             'name': 'exp003-frozen-detector',
              'config': {
-                 'architecture': 'faster-rcnn-r50',     # ===============================================================================================
+                 'architecture': 'faster-rcnn-r50',
                  'dataset': 'ROD',
-                 'preprocessing': 'learning-based'      # ===============================================================================================
+                 'preprocessing': 'learning-based-frozen-detector'
              }
          })
 ]
@@ -294,4 +304,3 @@ visualizer = dict(
     type='DetLocalVisualizer',
     vis_backends=vis_backends,
     name='visualizer')
-

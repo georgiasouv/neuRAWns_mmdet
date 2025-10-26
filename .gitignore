@@ -1,13 +1,39 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
 *.egg-info/
+*.egg
+dist/
+build/
 
 # MMDetection / Training Outputs
 work_dirs/
+*.log
+*.pth
+*.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Git
+.git/
+
+# WandB
+wandb/
+
+# Data (if you accidentally put data in repo)
+data/
+*.jpg
+*.png
+*.raw
 
 # VSCode
 .vscode/
 
-# Other common ignores
+# Other
 .DS_Store
+*.swp
+*.swo
+*~

@@ -1,0 +1,47 @@
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/optim/optimizer/zero_optimizer.py:11: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import \
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/optim/optimizer/zero_optimizer.py:11: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import \
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+wandb: Currently logged in as: georgiasouval (georgiasouval-university-of-warwick) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run jj48z0vj
+wandb: Tracking run with wandb version 0.22.1
+wandb: Run data is saved locally in /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp002/20251023_201942/vis_data/wandb/run-20251023_201945-jj48z0vj
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp002
+wandb: ⭐️ View project at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD
+wandb: 🚀 View run at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD/runs/jj48z0vj
+wandb: updating run metadata
+wandb: uploading output.log
+wandb: 
+wandb: Run history:
+wandb:              acc ▇▁▅▆▆▇▆▅▆▇▆▅▅▅▆▇▇▆▇▇▅▇▇█▇▆▇▇▇▇▇▇▆█▅▇▇▆▆▆
+wandb:    coco/bbox_mAP ▁▃▄▄▅▅▅▆███████████████
+wandb: coco/bbox_mAP_50 ▁▃▅▅▅▆▆▆███████████████
+wandb: coco/bbox_mAP_75 ▁▃▄▄▅▅▅▆███████████████
+wandb:  coco/bbox_mAP_l ▁▃▄▄▅▅▅▆███████████████
+wandb:  coco/bbox_mAP_m ▁▃▄▄▅▅▆▅███████████████
+wandb:  coco/bbox_mAP_s ▁▄▄▄▄▅▅▅▇▇▇▇▇▇█████████
+wandb:        data_time ██▆▆██▆▅▄▇▇▇▄▅▇▇▇▇▅▁▇▇▇█▇█▅▆▁▄▇▇█▆█▆▇▆▅▅
+wandb:            epoch ▁▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▆▆▇▇▇▇▇████
+wandb:        grad_norm █▇▆▅▄▅▄▃▅▄▄▅▃▄▄▁▁▂▃▃▃▂▃▄▃▃▃▃▄▃▄▃▃▄▃▃▃▄▄▄
+wandb:               +9 ...
+wandb: 
+wandb: Run summary:
+wandb:              acc 97.07031
+wandb:    coco/bbox_mAP 0.397
+wandb: coco/bbox_mAP_50 0.607
+wandb: coco/bbox_mAP_75 0.432
+wandb:  coco/bbox_mAP_l 0.639
+wandb:  coco/bbox_mAP_m 0.38
+wandb:  coco/bbox_mAP_s 0.047
+wandb:        data_time 0.34972
+wandb:            epoch 23
+wandb:        grad_norm 1.62995
+wandb:               +9 ...
+wandb: 
+wandb: 🚀 View run exp002 at: https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD/runs/jj48z0vj
+wandb: ⭐️ View project at: https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD
+wandb: Synced 5 W&B file(s), 0 media file(s), 3 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./work_dirs/exp002/20251023_201942/vis_data/wandb/run-20251023_201945-jj48z0vj/logs

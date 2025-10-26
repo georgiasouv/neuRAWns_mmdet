@@ -1,12 +1,33 @@
+# import os.path as osp
+
+# _config_name = osp.splitext(osp.basename(__file__))[0]
+# work_dir = f'work_dirs/{_config_name}'
+
+custom_imports = dict(
+    imports=['mmengine.hooks'],
+    allow_failed_imports=False
+)
+
 _base_ = [
-    '../configs/_base_/models/faster-rcnn_r50_fpn.py',
-    '../configs/_base_/schedules/schedule_1x.py',
-    '../configs/_base_/default_runtime.py'
+     'mmdet::faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'
 ]
+
 # Dataset settings
 dataset_type = 'CocoDataset'
 data_root = '/cifs/Shares/Raw_Bayer_Datasets/ROD/'
 classes = ('Car', 'Cyclist', 'Pedestrian', 'Tram', 'Truck')
+
+
+optim_wrapper = dict(
+    type='OptimWrapper',
+    optimizer=dict(
+        type='SGD',
+        lr=0.02,  # ← ADD THIS
+        momentum=0.9,
+        weight_decay=0.0001
+    ),
+    clip_grad=dict(max_norm=35, norm_type=2)  
+)
 
 train_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -16,6 +37,13 @@ train_pipeline = [
     dict(type='PackDetInputs')
 ]
 
+train_cfg = dict(
+    type='EpochBasedTrainLoop',
+    max_epochs=100,  
+    val_interval=1
+)
+
+
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
@@ -24,7 +52,7 @@ test_pipeline = [
 
 train_dataloader = dict(
     batch_size=4,
-    num_workers=2,
+    num_workers=1,
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -38,7 +66,7 @@ train_dataloader = dict(
 
 val_dataloader = dict(
     batch_size=1,
-    num_workers=2,
+    num_workers=1,
     persistent_workers=True,
     drop_last=False,
     sampler=dict(type='DefaultSampler', shuffle=False),
@@ -81,12 +109,35 @@ model = dict(
     roi_head=dict(
         bbox_head=dict(num_classes=5)))
 
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=1,                    # Save every epoch
+        max_keep_ckpts=2,             # Keep only last 3 checkpoints
+        save_best='coco/bbox_mAP',    # Also save best mAP checkpoint
+        rule='greater'                 # Higher mAP is better
+    )
+    
+)
+
+# custom_hooks is a list because you're adding new hooks that don't exist in the defaults
+#
+custom_hooks = [
+    dict(
+        type='EarlyStoppingHook',
+        monitor='coco/bbox_mAP',
+        patience=10,
+        rule='greater',
+        min_delta=0.001
+    )
+]
+
 vis_backends = [
     dict(type='LocalVisBackend'),
     dict(type='WandbVisBackend',
          init_kwargs={
-             'project': 'rod-raw-preprocessing',
-             'name': 'baseline-faster-rcnn-isp',
+             'project': 'neuRAWns-mmdet-ROD',
+             'name': 'exp001-baseline-faster-rcnn-r50',
              'config': {
                  'architecture': 'faster-rcnn-r50',
                  'dataset': 'ROD',
@@ -99,3 +150,4 @@ visualizer = dict(
     type='DetLocalVisualizer',
     vis_backends=vis_backends,
     name='visualizer')
+

@@ -10,29 +10,22 @@ class Exp002ConvBN(BasePreprocessor):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.norm_thr = norm_threshold
-        
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size=5, stride=1, padding=2, bias=True)
         self.activation = nn.LeakyReLU(0.2)
-        self.output_scale = nn.Parameter(torch.tensor(1.0))
+        self.output_scale = nn.Parameter(torch.tensor(1.0)) #learnable parameter
+        self.wb_scale = nn.Parameter(torch.ones(3)) 
         
-        # Initialize conv to output balanced RGB channels
-        with torch.no_grad():
-            # Initialize weights small so outputs average the 4 RGGB channels
-            nn.init.constant_(self.conv.weight, 0.01)
-            # Initialize bias to push outputs toward ImageNet means
-            self.conv.bias.copy_(torch.tensor([0.485, 0.456, 0.406]))
-
     def forward(self, x):
         x = self.packing(x)
         x = self.adaptive_norm(x)
         x = self.gamma(x)
         x = self.conv(x)
         x = self.activation(x)
-        
         scale = torch.clamp(self.output_scale, min=0.1, max=10.0)
         x = x * scale
-        x = torch.clamp(x, 0, 1)
-        # ImageNet normalization
+        wb = self.wb_scale.view(1, 3, 1, 1)
+        x = x * wb
+        print(f"[PREPROCESSOR] Before norm - mean per channel: R={x[:,0].mean():.4f}, G={x[:,1].mean():.4f}, B={x[:,2].mean():.4f}")
         mean = x.new_tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
         std = x.new_tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
         x = (x - mean) / std
@@ -62,8 +55,8 @@ class Exp002ConvBN(BasePreprocessor):
         x = x / norm
         x = torch.clamp(x, 0, 1)
         return x
-
-
+    
+    
     def gamma(self, x):
         return x**(1/2.2)
         

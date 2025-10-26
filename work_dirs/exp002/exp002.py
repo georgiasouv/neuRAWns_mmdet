@@ -1,4 +1,6 @@
+DEBUG_MODE = True
 auto_scale_lr = dict(base_batch_size=16, enable=False)
+backend_args = None
 classes = (
     'Car',
     'Cyclist',
@@ -7,7 +9,12 @@ classes = (
     'Truck',
 )
 custom_hooks = [
-    dict(priority='VERY_HIGH', type='FreezeDetectorHook'),
+    dict(
+        min_delta=0.001,
+        monitor='coco/bbox_mAP',
+        patience=10,
+        rule='greater',
+        type='EarlyStoppingHook'),
 ]
 custom_imports = dict(
     allow_failed_imports=False,
@@ -16,27 +23,38 @@ custom_imports = dict(
         'modules.raw_backbones',
         'modules.hooks',
         'datasets.pipelines',
+        'mmengine.hooks',
     ])
 data_root = '/cifs/Shares/Raw_Bayer_Datasets/ROD/'
 dataset_type = 'CocoDataset'
 default_hooks = dict(
-    checkpoint=dict(interval=1, type='CheckpointHook'),
-    logger=dict(interval=50, type='LoggerHook'),
-    param_scheduler=dict(type='ParamSchedulerHook'),
-    sampler_seed=dict(type='DistSamplerSeedHook'),
-    timer=dict(type='IterTimerHook'),
-    visualization=dict(type='DetVisualizationHook'))
+    checkpoint=dict(
+        _scope_='mmdet',
+        interval=1,
+        max_keep_ckpts=2,
+        rule='greater',
+        save_best='coco/bbox_mAP',
+        type='CheckpointHook'),
+    logger=dict(_scope_='mmdet', interval=50, type='LoggerHook'),
+    param_scheduler=dict(_scope_='mmdet', type='ParamSchedulerHook'),
+    sampler_seed=dict(_scope_='mmdet', type='DistSamplerSeedHook'),
+    timer=dict(_scope_='mmdet', type='IterTimerHook'),
+    visualization=dict(_scope_='mmdet', type='DetVisualizationHook'))
 default_scope = 'mmdet'
 env_cfg = dict(
     cudnn_benchmark=False,
     dist_cfg=dict(backend='nccl'),
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
+exp_name = 'exp002'
 launcher = 'none'
 load_from = None
 log_level = 'INFO'
-log_processor = dict(by_epoch=True, type='LogProcessor', window_size=50)
+log_processor = dict(
+    _scope_='mmdet', by_epoch=True, type='LogProcessor', window_size=50)
 model = dict(
+    _scope_='mmdet',
     backbone=dict(
+        debug_mode=True,
         depth=50,
         frozen_stages=1,
         init_cfg=dict(checkpoint='torchvision://resnet50', type='Pretrained'),
@@ -197,12 +215,20 @@ model = dict(
             nms_pre=2000)),
     type='FasterRCNN')
 optim_wrapper = dict(
+    _scope_='mmdet',
+    clip_grad=dict(max_norm=35, norm_type=2),
     optimizer=dict(lr=0.02, momentum=0.9, type='SGD', weight_decay=0.0001),
     type='OptimWrapper')
 param_scheduler = [
     dict(
-        begin=0, by_epoch=False, end=500, start_factor=0.001, type='LinearLR'),
+        _scope_='mmdet',
+        begin=0,
+        by_epoch=False,
+        end=500,
+        start_factor=0.001,
+        type='LinearLR'),
     dict(
+        _scope_='mmdet',
         begin=0,
         by_epoch=True,
         end=12,
@@ -214,11 +240,13 @@ param_scheduler = [
         type='MultiStepLR'),
 ]
 resume = False
-test_cfg = dict(type='TestLoop')
+test_cfg = dict(_scope_='mmdet', type='TestLoop')
 test_dataloader = dict(
     batch_size=1,
     dataset=dict(
+        _scope_='mmdet',
         ann_file='json_raw/test.json',
+        backend_args=None,
         data_prefix=dict(img='raw/test/'),
         data_root='/cifs/Shares/Raw_Bayer_Datasets/ROD/',
         metainfo=dict(
@@ -237,13 +265,16 @@ test_dataloader = dict(
             ), type='Resize'),
             dict(type='PackDetInputs'),
         ],
+        test_mode=True,
         type='CocoDataset'),
     drop_last=False,
-    num_workers=2,
+    num_workers=1,
     persistent_workers=True,
-    sampler=dict(shuffle=False, type='DefaultSampler'))
+    sampler=dict(_scope_='mmdet', shuffle=False, type='DefaultSampler'))
 test_evaluator = dict(
+    _scope_='mmdet',
     ann_file='/cifs/Shares/Raw_Bayer_Datasets/ROD/json_raw/test.json',
+    backend_args=None,
     format_only=False,
     metric='bbox',
     type='CocoMetric')
@@ -255,11 +286,18 @@ test_pipeline = [
     ), type='Resize'),
     dict(type='PackDetInputs'),
 ]
-train_cfg = dict(max_epochs=12, type='EpochBasedTrainLoop', val_interval=1)
+train_cfg = dict(
+    _scope_='mmdet',
+    max_epochs=100,
+    type='EpochBasedTrainLoop',
+    val_interval=1)
 train_dataloader = dict(
+    batch_sampler=dict(_scope_='mmdet', type='AspectRatioBatchSampler'),
     batch_size=4,
     dataset=dict(
+        _scope_='mmdet',
         ann_file='json_raw/train.json',
+        backend_args=None,
         data_prefix=dict(img='raw/train/'),
         data_root='/cifs/Shares/Raw_Bayer_Datasets/ROD/',
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
@@ -282,9 +320,9 @@ train_dataloader = dict(
             dict(type='PackDetInputs'),
         ],
         type='CocoDataset'),
-    num_workers=2,
+    num_workers=1,
     persistent_workers=True,
-    sampler=dict(shuffle=True, type='DefaultSampler'))
+    sampler=dict(_scope_='mmdet', shuffle=True, type='DefaultSampler'))
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
@@ -295,11 +333,13 @@ train_pipeline = [
     dict(prob=0.5, type='RandomFlip'),
     dict(type='PackDetInputs'),
 ]
-val_cfg = dict(type='ValLoop')
+val_cfg = dict(_scope_='mmdet', type='ValLoop')
 val_dataloader = dict(
     batch_size=1,
     dataset=dict(
+        _scope_='mmdet',
         ann_file='json_raw/val.json',
+        backend_args=None,
         data_prefix=dict(img='raw/val/'),
         data_root='/cifs/Shares/Raw_Bayer_Datasets/ROD/',
         metainfo=dict(
@@ -318,13 +358,16 @@ val_dataloader = dict(
             ), type='Resize'),
             dict(type='PackDetInputs'),
         ],
+        test_mode=True,
         type='CocoDataset'),
     drop_last=False,
-    num_workers=2,
+    num_workers=1,
     persistent_workers=True,
-    sampler=dict(shuffle=False, type='DefaultSampler'))
+    sampler=dict(_scope_='mmdet', shuffle=False, type='DefaultSampler'))
 val_evaluator = dict(
+    _scope_='mmdet',
     ann_file='/cifs/Shares/Raw_Bayer_Datasets/ROD/json_raw/val.json',
+    backend_args=None,
     format_only=False,
     metric='bbox',
     type='CocoMetric')
@@ -335,12 +378,13 @@ vis_backends = [
             config=dict(
                 architecture='faster-rcnn-r50',
                 dataset='ROD',
-                preprocessing='raw-learnable'),
+                preprocessing='learning-based'),
             name='exp002',
-            project='rod-raw-preprocessing'),
+            project='neuRAWns-mmdet-ROD'),
         type='WandbVisBackend'),
 ]
 visualizer = dict(
+    _scope_='mmdet',
     name='visualizer',
     type='DetLocalVisualizer',
     vis_backends=[
@@ -350,9 +394,9 @@ visualizer = dict(
                 config=dict(
                     architecture='faster-rcnn-r50',
                     dataset='ROD',
-                    preprocessing='raw-learnable'),
+                    preprocessing='learning-based'),
                 name='exp002',
-                project='rod-raw-preprocessing'),
+                project='neuRAWns-mmdet-ROD'),
             type='WandbVisBackend'),
     ])
 work_dir = './work_dirs/exp002'

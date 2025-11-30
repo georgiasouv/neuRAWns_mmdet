@@ -1,0 +1,17 @@
+[build-system]
+# This is standard boilerplate. It tells pip *how* to build your project.
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# This is the metadata. Change 'name' to your project's name.
+name = "neuRAWns_mmdet"
+version = "0.1.0"
+readme = "README.md"  # Optional: if you have a README file
+requires-python = ">=3.10" # Optional: specify your minimum Python version
+
+[tool.setuptools.packages.find]
+# This tells setuptools *what* code to include.
+# It will find 'datasets' automatically.
+# We explicitly exclude 'tools' because it's a script folder, not part of your library.
+exclude = ["tools", "tools.*", "tests", "tests.*"]

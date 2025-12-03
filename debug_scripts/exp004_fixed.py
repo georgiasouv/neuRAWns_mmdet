@@ -5,6 +5,7 @@ custom_imports = dict(
     imports=['modules.raw_preprocessors',
              'modules.raw_backbones',
              'modules.hooks',
+             'modules.metrics',
              'datasets.pipelines',
              'mmengine.hooks'],
     allow_failed_imports=False
@@ -41,8 +42,9 @@ optim_wrapper = dict(
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    # dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
+    dict(type='AddScaleFactor'),
     dict(type='PackDetInputs')
 ]
 
@@ -54,13 +56,14 @@ train_cfg = dict(
 
 test_pipeline = [
     dict(type='LoadRAWImageFromFile'),
-    dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    # dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    dict(type='AddScaleFactor'),
     dict(type='PackDetInputs')
 ]
 
 train_dataloader = dict(
     batch_size=4,
-    num_workers=1,
+    num_workers=1, 
     persistent_workers=True,
     sampler=dict(type='DefaultSampler', shuffle=True),
     dataset=dict(
@@ -102,13 +105,21 @@ val_dataloader = dict(
 #         metainfo=dict(classes=classes)))
 
 
+# val_evaluator = dict(
+#     type='CocoMetric',
+#     ann_file=data_root + 'json_sample_raw_coco/val.json',
+#     metric='bbox',
+#     format_only=False,
+#     classwise=True)
+
 val_evaluator = dict(
-    type='CocoMetric',
+    type='FilteredCocoMetric',  # ← Change from 'CocoMetric'
+    coco_to_local_map={0: 0, 1: 1, 2: 2, 6: 3, 7: 4},  # Add this
     ann_file=data_root + 'json_sample_raw_coco/val.json',
     metric='bbox',
     format_only=False,
-    classwise=True)
-
+    classwise=True
+)
 # test_evaluator = dict(
 #     type='CocoMetric',
 #     ann_file=data_root + 'json_raw_coco/test.json',  
@@ -129,10 +140,9 @@ model = dict(
         type='RAWResNet',
         debug_mode=DEBUG_MODE,  
         preprocess_cfg=dict(
-            type='Exp002ConvBN',
-            in_channels=4,
-            out_channels=3,
-            norm_threshold=0.99
+            type='FixedISP',  # ← Change from 'Exp002ConvBN' to 'FixedISP'
+            norm_threshold=0.95,
+            gamma=2.2
         ),
         depth=50,
         num_stages=4,
@@ -251,11 +261,16 @@ model = dict(
             nms=dict(type='nms', iou_threshold=0.7),
             min_bbox_size=0
         ),
+        # rcnn=dict(
+        #     score_thr=0.05,
+        #     nms=dict(type='nms', iou_threshold=0.5),
+        #     max_per_img=100
+        # )
         rcnn=dict(
-            score_thr=0.05,
+            score_thr=0.0,
             nms=dict(type='nms', iou_threshold=0.5),
             max_per_img=100
-        )
+        ),
     )
 )
 
@@ -275,12 +290,12 @@ custom_hooks = [
         classes=classes,
         priority='VERY_HIGH'
     ),
-    dict(
-        type='FreezeDetectorHook',
-        debug_mode=DEBUG_MODE,
-        check_updates=DEBUG_MODE,
-        priority='VERY_HIGH'
-    ),
+    # dict(
+    #     type='FreezeDetectorHook',
+    #     debug_mode=DEBUG_MODE,
+    #     check_updates=DEBUG_MODE,
+    #     priority='VERY_HIGH'
+    # ),
     dict(
         type='EarlyStoppingHook',
         monitor='coco/bbox_mAP',

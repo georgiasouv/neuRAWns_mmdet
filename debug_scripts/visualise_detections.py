@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 import sys
 import os
+from mmdet.structures import DetDataSample
 
 # Add project root
 sys.path.insert(0, '/home/souval_g_WMGDS.WMG.WARWICK.AC.UK/Desktop/neuRAWns_mmdet')
@@ -88,14 +89,14 @@ data['inputs'] = input_tensor.to(device)
 if 'data_samples' in data and not isinstance(data['data_samples'], list):
     data['data_samples'] = [data['data_samples']]
 elif 'data_samples' not in data:
-    from mmdet.structures import DetDataSample
     data_sample = DetDataSample()
     data['data_samples'] = [data_sample]
+    
+print("\nMETAINFO (BEFORE INFERENCE):")
+print(data['data_samples'][0].metainfo)
 
 # Run inference
 with torch.no_grad():
-    print("\nDEBUG METAINFO:")
-    print(data['data_samples'][0].metainfo)
     results = model.test_step(data)
 
 result = results[0]
@@ -122,10 +123,19 @@ else:
 
 # Filter by confidence threshold
 confidence_threshold = 0.05  # ← Lower threshold to see more detections
-mask = all_scores >= confidence_threshold
-labels = all_labels[mask]
-scores = all_scores[mask]
-bboxes = all_bboxes[mask]
+# mask = all_scores >= confidence_threshold
+# labels = all_labels[mask]
+# scores = all_scores[mask]
+# bboxes = all_bboxes[mask]
+labels = all_labels
+scores = all_scores
+bboxes = all_bboxes
+
+print("RAW BBOXES (first 10):", bboxes[:10])
+print("RAW SCORES (first 10):", scores[:10])
+print("RAW LABELS (unique):", np.unique(labels))
+
+
 
 print(f"  Detections above {confidence_threshold}: {len(labels)}")
 

@@ -97,6 +97,11 @@ print(data['data_samples'][0].metainfo)
 
 # Run inference
 with torch.no_grad():
+    print(f"\n[DEBUG] scale_factor investigation:")
+    print(f"  Type: {type(data['data_samples'][0].scale_factor)}")
+    print(f"  Value: {data['data_samples'][0].scale_factor}")
+    print(f"  Shape: {data['data_samples'][0].scale_factor.shape if hasattr(data['data_samples'][0].scale_factor, 'shape') else 'no shape attr'}")
+    print(f"  Length: {len(data['data_samples'][0].scale_factor)}")
     results = model.test_step(data)
 
 result = results[0]
@@ -122,14 +127,12 @@ else:
     print(f"  ⚠️  WARNING: No predictions at all!")
 
 # Filter by confidence threshold
-confidence_threshold = 0.05  # ← Lower threshold to see more detections
-# mask = all_scores >= confidence_threshold
-# labels = all_labels[mask]
-# scores = all_scores[mask]
-# bboxes = all_bboxes[mask]
-labels = all_labels
-scores = all_scores
-bboxes = all_bboxes
+confidence_threshold = 0.3  # ← Lower threshold to see more detections
+mask = all_scores >= confidence_threshold
+labels = all_labels[mask]
+scores = all_scores[mask]
+bboxes = all_bboxes[mask]
+
 
 print("RAW BBOXES (first 10):", bboxes[:10])
 print("RAW SCORES (first 10):", scores[:10])
@@ -225,8 +228,8 @@ print("\nSTEP 5: Drawing bounding boxes...")
 
 # Use the *denormalised* RGB image you already saved
 vis_img = debug_img.copy()  # debug_img from earlier, uint8 HxWx3 RGB
-
-for bbox, score, label in zip(bboxes, scores, labels):
+scaled_bboxes = bboxes / 2.0 
+for bbox, score, label in zip(scaled_bboxes, scores, labels):
     x1, y1, x2, y2 = bbox.astype(int)
 
     # Draw rectangle

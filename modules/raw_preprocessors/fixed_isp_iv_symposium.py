@@ -1,3 +1,4 @@
+
 import torch
 import torch.nn as nn
 from .base_preprocessor import BasePreprocessor
@@ -7,7 +8,7 @@ from mmdet.registry import MODELS
 class FixedISP(BasePreprocessor):
     """Fixed ISP pipeline with no learnable parameters - for validation only."""
     
-    def __init__(self, norm_threshold=0.99, gamma=2.2):
+    def __init__(self, norm_threshold=0.95, gamma=2.2):
         super().__init__()
         self.norm_threshold = norm_threshold
         self.gamma = gamma

@@ -42,7 +42,7 @@ optim_wrapper = dict(
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    # dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    dict(type='BayerResize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
     dict(type='AddScaleFactor'),
     dict(type='PackDetInputs')
@@ -56,7 +56,7 @@ train_cfg = dict(
 
 test_pipeline = [
     dict(type='LoadRAWImageFromFile'),
-    # dict(type='Resize', scale=(1333, 800), keep_ratio=True),
+    dict(type='BayerResize', scale=(1333, 800), keep_ratio=True),
     dict(type='AddScaleFactor'),
     dict(type='PackDetInputs')
 ]
@@ -134,7 +134,7 @@ model = dict(
         mean=None, 
         std=None,    
         bgr_to_rgb=False,          
-        pad_size_divisor=32        
+        pad_size_divisor=32       
     ),
     backbone=dict(
         type='RAWResNet',
@@ -151,7 +151,7 @@ model = dict(
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
         style='pytorch',
-        init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')
+        # init_cfg=dict(type='Pretrained', checkpoint='torchvision://resnet50')
     ),
     neck=dict(
         type='FPN',

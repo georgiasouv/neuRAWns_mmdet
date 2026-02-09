@@ -234,7 +234,6 @@ vis_backends = [
          })
 ]
 
-
 visualizer = dict(
     type='DetLocalVisualizer',
     vis_backends=vis_backends,

@@ -1,8 +1,20 @@
-import torch
+import torch 
+import torch.nn as nn
+from mmdet.registry import MODELS
+from mmdet.models import build_detector
 
+@MODELS.register_module()
 class MultiDetectorModel(nn.Module):
-    
-    def __init__(self, preprocessing, detector_configs):
+    """
+    Wraps 3 frozen detectors for multi-objective training.
+    """
+    def __init__(self, 
+                 detector_cfgs,
+                 detector_ckpts,
+                 loss_weights=None):
+        super().__init__()
+        
+        
         pass
     
     def forward(self, batch_inputs, data_samples):

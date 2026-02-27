@@ -1,7 +1,9 @@
 import torch.nn as nn
 import torch
 from mmdet.registry import MODELS
+from mmengine.registry import MODELS as MMENGINE_MODELS
 
+@MMENGINE_MODELS.register_module()
 @MODELS.register_module()
 class Exp005Preprocessor(nn.Module):
     def __init__(self):

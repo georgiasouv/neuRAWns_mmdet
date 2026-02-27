@@ -138,8 +138,6 @@ print("RAW BBOXES (first 10):", bboxes[:10])
 print("RAW SCORES (first 10):", scores[:10])
 print("RAW LABELS (unique):", np.unique(labels))
 
-
-
 print(f"  Detections above {confidence_threshold}: {len(labels)}")
 
 if len(labels) > 0:

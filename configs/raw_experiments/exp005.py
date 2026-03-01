@@ -1,8 +1,12 @@
 exp_name = 'exp005'
 DEBUG_MODE = True
 
+default_scope = 'mmdet' 
+
 custom_imports = dict(
-    imports=['modules.raw_preprocessors',
+    imports=['mmdet.datasets',
+             'mmdet.evaluation',
+             'modules.raw_preprocessors',
              'modules.raw_backbones',
              'modules.hooks',
              'modules.multidetector_wrapper',
@@ -20,6 +24,13 @@ classes = ('person', 'bicycle', 'car', 'train', 'truck')
 
 model = dict(
     type='MultiDetectorModel',
+    data_preprocessor=dict(         
+        type='DetDataPreprocessor',
+        mean=None,
+        std=None,
+        bgr_to_rgb=False,
+        pad_size_divisor=32,
+    ),
     preprocessor_cfg=dict(
         type='Exp005Preprocessor'
     ),
@@ -190,7 +201,7 @@ model = dict(
                 act_cfg=dict(type='SiLU', inplace=True)
             ),
             bbox_head=dict(
-                type='RTMDetHead',
+                type='RTMDetSepBNHead',
                 num_classes=80,
                 in_channels=192,
                 stacked_convs=2,
@@ -296,7 +307,6 @@ model = dict(
                         ffn_drop=0.1
                     )
                 ),
-                post_norm_cfg=None
             ),
             positional_encoding=dict(
                 num_feats=128,
@@ -381,8 +391,8 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/train.json',
-        data_prefix=dict(img='raw/train/'),
+        ann_file='annotations/json_raw_coco_mapped/train.json',
+        data_prefix=dict(img='images/raw/train/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline,
         metainfo=dict(classes=classes)))
@@ -396,8 +406,8 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/val.json',
-        data_prefix=dict(img='raw/val/'),
+        ann_file='annotations/json_raw_coco_mapped/val.json',
+        data_prefix=dict(img='images/raw/val/'),
         pipeline=test_pipeline,
         metainfo=dict(classes=classes)))
 
@@ -410,22 +420,22 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/test.json',
-        data_prefix=dict(img='raw/test/'),
+        ann_file='annotations/json_raw_coco_mapped/test.json',
+        data_prefix=dict(img='images/raw/test/'),
         pipeline=test_pipeline,
         metainfo=dict(classes=classes)))
 
 
 val_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations/val.json',
+    ann_file=data_root + 'annotations/json_raw_coco_mapped/val.json',
     metric='bbox',
     format_only=False,
     classwise=True)
 
 test_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations/test.json',
+    ann_file=data_root + 'annotations/json_raw_coco_mapped/test.json',
     metric='bbox',
     format_only=False,
     classwise=True)

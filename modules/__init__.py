@@ -6,4 +6,4 @@ from .multidetector_wrapper import MultiDetectorModel
 
 
 
-__all__ = [...]
+__all__ = ['MultiDetectorModel']

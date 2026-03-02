@@ -53,7 +53,7 @@ class MultiDetectorModel(BaseDetector):
             detectors.append(cls(**cfg))
         self.detectors = nn.ModuleList(detectors)
         for detector, ckpt_path in zip(self.detectors, detector_ckpts):
-            load_checkpoint(detector, ckpt_path, map_location='cpu')
+            load_checkpoint(detector, ckpt_path, map_location='cpu', strict=False)
         for detector in self.detectors:
             for param in detector.parameters():
                 param.requires_grad = False

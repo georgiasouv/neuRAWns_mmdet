@@ -32,7 +32,7 @@ model = dict(
         pad_size_divisor=32,
     ),
     preprocessor_cfg=dict(
-        type='Exp005Preprocessor'
+        type='Exp002ConvBN'
     ),
     detector_cfgs=[
         dict(

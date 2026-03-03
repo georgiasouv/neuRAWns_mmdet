@@ -19,24 +19,35 @@ class Exp002ConvBN(BasePreprocessor):
         with torch.no_grad():
             # Initialize weights small so outputs average the 4 RGGB channels
             nn.init.constant_(self.conv.weight, 0.01)
-            # Initialize bias to push outputs toward ImageNet means
-            self.conv.bias.copy_(torch.tensor([0.485, 0.456, 0.406]))
+            # # Initialize bias to push outputs toward ImageNet means
+            # self.conv.bias.copy_(torch.tensor([0.485, 0.456, 0.406]))
 
     def forward(self, x):
-        x = self.packing(x)
+        # x is (B, 1, H, W) from DetDataPreprocessor
+        B, C, H, W = x.shape
+
+        x = self.packing(x)        # (B, 4, H/2, W/2)
         x = self.adaptive_norm(x)
         x = self.gamma(x)
-        x = self.conv(x)
+        x = self.conv(x)           # (B, 3, H/2, W/2)
         x = self.activation(x)
-        
+
         scale = torch.clamp(self.output_scale, min=0.1, max=10.0)
         x = x * scale
         x = torch.clamp(x, 0, 1)
+
         # ImageNet normalization
-        mean = x.new_tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
-        std = x.new_tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
-        x = (x - mean) / std
+        # mean = x.new_tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
+        # std = x.new_tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
+        # x = (x - mean) / std
+
+        # NEW: upsample back to original padded size (H, W)
+        x = torch.nn.functional.interpolate(
+            x, size=(H, W), mode='bilinear', align_corners=False
+        )
+
         return x
+
     
 
     def packing(self, x): # RGGB

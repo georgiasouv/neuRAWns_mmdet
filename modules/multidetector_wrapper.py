@@ -1,5 +1,6 @@
 import mmdet.models
 import mmdet.structures
+from mmdet.structures import InstanceData
 import torch
 import torch.nn as nn
 from mmdet.registry import MODELS, TASK_UTILS
@@ -59,7 +60,7 @@ class MultiDetectorModel(BaseDetector):
                 param.requires_grad = False
         
     
-    def loss(self, batch_inputs, data_samples):
+    def loss(self, batch_inputs, data_samples):   # USED DURING TRAINING 
         preprocessed = self.preprocessing(batch_inputs) # step1: shared preprocessing
         #step2: forward through each detector 
         # Sequential for memory efficiency (reuse activation space)
@@ -77,12 +78,84 @@ class MultiDetectorModel(BaseDetector):
         
         # Each detector returns a dict like {'loss_cls': 0.5, 'loss_bbox': 0.3}
         
-    def predict(self, batch_inputs, data_samples):
+    def predict(self, batch_inputs, data_samples, debug_all=False):     # USED DURING VALIDATION/ INFERENCE
+       # 1) shared preprocessing: raw (N,1,H,W) -> rgb (N,3,H,W)
         preprocessed = self.preprocessing(batch_inputs)
-        return self.detectors[0].predict(preprocessed, data_samples)
+        
+        if not debug_all:
+            # original behaviour: only detector 0 used for eval
+            return self.detectors[0].predict(preprocessed, data_samples)
+
+        # 2) run all detectors
+        all_outs = []  # list[num_det][batch] of DetDataSample
+        for det in self.detectors:
+            outs = det.predict(preprocessed, data_samples)
+            all_outs.append(outs)
+            
+        merged = []
+        for img_idx, base_ds in enumerate(data_samples):
+            # copy base sample (metainfo, gt_instances, etc.)
+            ds = base_ds.new()
+            
+            # attach per detecotr predictions
+            for det_idx, det_out in enumerate(all_outs):
+                inst = det_out[img_idx].pred_instances  # InstanceData
+                setattr(ds, f'det{det_idx}_pred_instances', inst)
+
+            # for compatibility with evaluator, use detector 0 as main pred
+            ds.pred_instances = getattr(ds, 'det0_pred_instances')
+
+            merged.append(ds)
+
+        return merged
+
+            
     
     def extract_feat(self, batch_inputs):
         return self.preprocessing(batch_inputs)
 
     def _forward(self, batch_inputs, data_samples=None):
         return self.preprocessing(batch_inputs)
+    
+    
+"""
+    batch_inputs = the image tensor batch (what the network sees).
+    batch_inputs.shape == (2, 1, 800, 1333)
+    dim 0: batch dimension (2 images)
+    dim 1: channels (1, Bayer)
+    dim 2 - 3: height, width
+    
+    data_samples = a python list of per image objects with metadata and ground truth. So for batch_size =2 , len(data_samples) == 2
+    
+    data_samples[0] = DetDataSample(
+        metainfo = {
+            'img_id': 101,
+            'img_path': 'cifs/Shares/WMG/Data/ROD/images/raw/train/000101.png',
+            'ori_shape': (1080, 1920, 3),    # original H,W,C
+            'img_shape': (800, 1333, 3),     # after Resize in pipeline
+            'scale_factor': (0.74, 0.74, 0.74, 0.74),
+            'flip': False,
+            'flip_direction': None,
+        },
+
+        gt_instances = InstanceData(
+            # 3 ground-truth boxes in this image
+            bboxes = tensor([
+                [ 150.3,  200.5,  400.7,  600.2],  # car
+                [ 600.0,  220.0,  800.0,  700.0],  # truck
+                [ 300.0,  500.0,  340.0,  620.0],  # person
+            ]),   # shape (3, 4), xyxy in resized image coords
+            labels = tensor([2, 4, 0]),  # indices into classes=('person','bicycle','car','train','truck')
+        ),
+        )
+
+    # during training, pred_instances may be empty or used internally
+    # during evaluation, model will add:
+    # pred_instances = InstanceData(...)
+)
+
+...
+    
+    data_samples = [DetDataSample_for_img101, DetDataSample_for_img102]
+    
+    """

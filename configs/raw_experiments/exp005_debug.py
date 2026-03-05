@@ -1,4 +1,5 @@
-exp_name = 'exp005_debug'
+exp_name = 'exp005_sanity'
+
 DEBUG_MODE = True
 
 default_scope = 'mmdet' 

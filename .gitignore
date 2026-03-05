@@ -28,6 +28,7 @@ data/
 *.jpg
 *.png
 *.raw
+*.npy
 
 # VSCode
 .vscode/

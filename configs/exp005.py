@@ -18,7 +18,7 @@ custom_imports = dict(
 )
 
 dataset_type = 'CocoDataset'
-data_root = '/cifs/Shares/WMGData/ROD/'
+data_root = '/cifs/Shares/WMGData/ROD/yolo/'
 classes = ('person', 'bicycle', 'car', 'train', 'truck')
 
 
@@ -391,8 +391,8 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/json_raw_coco_mapped/train.json',
-        data_prefix=dict(img='images/raw/train/'),
+        ann_file='raw/json_raw_coco_mapped/train.json',
+        data_prefix=dict(img='raw/images/train/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=train_pipeline,
         metainfo=dict(classes=classes)))
@@ -406,8 +406,8 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/json_raw_coco_mapped/val.json',
-        data_prefix=dict(img='images/raw/val/'),
+        ann_file='raw/json_raw_coco_mapped/val.json',
+        data_prefix=dict(img='raw/images/val/'),
         pipeline=test_pipeline,
         metainfo=dict(classes=classes)))
 
@@ -420,22 +420,22 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='annotations/json_raw_coco_mapped/test.json',
-        data_prefix=dict(img='images/raw/test/'),
+        ann_file='raw/json_raw_coco_mapped/test.json',
+        data_prefix=dict(img='raw/images/test/'),
         pipeline=test_pipeline,
         metainfo=dict(classes=classes)))
 
 
 val_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations/json_raw_coco_mapped/val.json',
+    ann_file=data_root + 'raw/json_raw_coco_mapped/val.json',
     metric='bbox',
     format_only=False,
     classwise=True)
 
 test_evaluator = dict(
     type='CocoMetric',
-    ann_file=data_root + 'annotations/json_raw_coco_mapped/test.json',
+    ann_file=data_root + 'raw/json_raw_coco_mapped/test.json',
     metric='bbox',
     format_only=False,
     classwise=True)

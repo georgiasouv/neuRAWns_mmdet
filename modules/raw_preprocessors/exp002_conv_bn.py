@@ -57,6 +57,9 @@ class Exp002ConvBN(BasePreprocessor):  # safe, almost fixed, learnable preproces
         x = self.conv(rgb)             # (B,3,H/2,W/2)
         x = self.activation(x)
         x = torch.clamp(x, 0.0, 1.0)
+        if self.training:
+            print(f"[DEBUG] conv bias: {self.conv.bias.data}")
+            print(f"[DEBUG] x range after clamp: [{x.min():.4f}, {x.max():.4f}]")
 
         # 7) Upsample back to original size
         x = F.interpolate(x, size=(H, W), mode='bilinear', align_corners=False)

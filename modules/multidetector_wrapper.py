@@ -1,6 +1,6 @@
 import mmdet.models
 import mmdet.structures
-from mmdet.structures import InstanceData
+from mmengine.structures import InstanceData
 import torch
 import torch.nn as nn
 from mmdet.registry import MODELS, TASK_UTILS

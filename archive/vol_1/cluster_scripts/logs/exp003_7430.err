@@ -1,0 +1,17 @@
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/optim/optimizer/zero_optimizer.py:11: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import \
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/optim/optimizer/zero_optimizer.py:11: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import \
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+wandb: Currently logged in as: georgiasouval (georgiasouval-university-of-warwick) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run obj6yvnz
+wandb: Tracking run with wandb version 0.22.1
+wandb: Run data is saved locally in /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp003/20251023_213920/vis_data/wandb/run-20251023_213925-obj6yvnz
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp003-frozen-detector
+wandb: ⭐️ View project at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD
+wandb: 🚀 View run at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD/runs/obj6yvnz
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/checkpoint.py:347: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  checkpoint = torch.load(filename, map_location=map_location)
+slurmstepd: error: *** JOB 7430 ON gpu-03 CANCELLED AT 2025-10-23T21:42:22 ***

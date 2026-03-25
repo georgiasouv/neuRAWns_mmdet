@@ -8,8 +8,6 @@ class RAWResNet(nn.Module):
                  debug_mode=False,
                  preprocess_cfg=dict(
                      type='RAWPreprocess_v1',
-                     in_channels=1,
-                     out_channels=3,
                      norm_threshold=0.99),
                  **resnet_kwargs):
         super().__init__()
@@ -49,7 +47,7 @@ class RAWResNet(nn.Module):
             print(f"\n{'='*70}")
             print("[DEBUG] RAW_ResNet Forward - First Batch")
             print(f"{'='*70}")
-            print(f"Input shape:  {x.shape}")  
+            print(f"Input shape:  {x.shape}")  # [B, 3, H/2, W/2]
             print(f"Input range:  [{x.min():.4f}, {x.max():.4f}]")
         
         x = self.preprocessor(x)
@@ -69,7 +67,6 @@ class RAWResNet(nn.Module):
 
     def get_preprocessed_for_visualisation(self, x):
         x = self.preprocessor(x)
-        x = nn.functional.interpolate(x, scale_factor=2, mode='bilinear', align_corners=False)
         mean = x.new_tensor([0.485, 0.456, 0.406]).view(1, 3, 1, 1)
         std = x.new_tensor([0.229, 0.224, 0.225]).view(1, 3, 1, 1)
         x = x * std + mean

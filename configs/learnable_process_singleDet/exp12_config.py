@@ -20,7 +20,7 @@ load_from = 'https://download.openmmlab.com/mmdetection/v2.0/faster_rcnn/faster_
 
 # Dataset settings
 dataset_type = 'CocoDataset'
-data_root = '/cifs/Shares/Raw_Bayer_Datasets/ROD/'
+data_root = '/cifs/Shares/WMGData/ROD/yolo/'
 # Map ROD classes to COCO classes
 # ROD annotations have: Car(0), Cyclist(1), Pedestrian(2), Tram(3), Truck(4)
 # We map to COCO: person(0), bicycle(1), car(2), train(6), truck(7)
@@ -55,6 +55,7 @@ train_cfg = dict(
 
 test_pipeline = [
     dict(type='LoadRAWImageFromFile'),
+    dict(type='PackBayer'), 
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='PackDetInputs')
 ]
@@ -122,18 +123,16 @@ model = dict(
     type='FasterRCNN',
     data_preprocessor=dict(
         type='DetDataPreprocessor',
-        mean=None, 
-        std=None,    
-        bgr_to_rgb=False,          
+        mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225],
+        bgr_to_rgb=False,         # the raw preprocessor already outputs RGB  
         pad_size_divisor=32        
     ),
     backbone=dict(
         type='RAWResNet',
         debug_mode=DEBUG_MODE,  
         preprocess_cfg=dict(
-            type='Exp002ConvBN',
-            in_channels=4,
-            out_channels=3,
+            type='Exp012Processor',
             norm_threshold=0.99
         ),
         depth=50,
@@ -293,7 +292,7 @@ custom_hooks = [
     dict(
         type='SaveBatchImagesHook',
         save_dir='sample_images',
-        experiment_name='exp004',
+        experiment_name='exp012',
         save_raw=True,
         save_preprocessed=True
     )
@@ -305,7 +304,7 @@ vis_backends = [
     dict(type='WandbVisBackend',
          init_kwargs={
              'project': 'neuRAWns-mmdet-ROD',
-             'name': 'exp004',
+             'name': 'exp012',
              'config': {
                  'architecture': 'faster-rcnn-r50',
                  'dataset': 'ROD',

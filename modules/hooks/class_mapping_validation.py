@@ -31,7 +31,7 @@ class ClassMappingValidationHook(Hook):
             num_classes = model.roi_head.bbox_head.num_classes
             print(f"[INFO] Model bbox_head.num_classes: {num_classes}")
             
-            if num_classes != 80:
-                print(f"[WARNING] Expected 80 COCO classes, got {num_classes}!")
+            if num_classes != len(self.classes):
+                print(f"[WARNING] Expected {len(self.classes)} COCO classes, got {num_classes}!")
         
         print("\n" + "="*80 + "\n")

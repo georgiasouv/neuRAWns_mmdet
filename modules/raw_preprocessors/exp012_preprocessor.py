@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from .base_preprocessor import BasePreprocessor
 from mmdet.registry import MODELS
 
-
+# PREPROCESSOR USED IN EXP12, EXP13, EXP14, EXP15 ######
 @MODELS.register_module()
 class Exp012Processor(BasePreprocessor):  # safe, almost fixed, learnable preprocessor
     def __init__(self, norm_threshold=0.99, debug=False):

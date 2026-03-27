@@ -1,0 +1,169 @@
+===============================================================================
+pre_submit_checklist.txt
+Explanation of every step in pre_submit_checklist.sh
+===============================================================================
+
+WHY THIS ORDER?
+---------------
+The order follows a dependency chain. Each step checks a condition that the
+next step depends on. There is no point checking GPU availability if your
+data is unreachable, and no point submitting if there are no free GPUs.
+Fix problems early rather than discovering them hours into a job.
+
+
+STEP 1 — klist
+--------------
+COMMAND:  klist
+WHY:      Your cluster uses Kerberos to authenticate access to the network
+          filesystem where your datasets live (/cifs/Shares/WMGData/).
+          If the ticket is expired, your job will start, the GPU will spin up,
+          and then fail silently when it tries to read the first image.
+          You would waste hours of GPU time and have no useful error message.
+INTERPRET:
+  - Good: output shows a principal (souval_g@...) and an expiry date in
+          the future. You are fine.
+  - Bad:  "No credentials cache found" or "Credentials have expired"
+          → run: kinit -r 7d souval_g < ~/.kerberos_pass
+          then run klist again to confirm a new ticket exists.
+
+
+STEP 2 — ls /cifs/Shares/WMGData/
+----------------------------------
+COMMAND:  ls /cifs/Shares/WMGData/
+WHY:      Even with a valid Kerberos ticket, the CIFS network mount can be
+          in a stale or unmounted state. Doing an ls forces the automount
+          daemon to connect. If this fails, your datasets are unreachable
+          regardless of anything else.
+INTERPRET:
+  - Good: you see your dataset folders listed (ROD, PASCALRAW, etc.)
+  - Bad:  command hangs for >10 seconds, or returns "Permission denied"
+          or "No such file or directory"
+          → your ticket may have just expired (go back to step 1), or
+            the CIFS server is down (contact IT, nothing you can do).
+          → do NOT submit until this works.
+
+
+STEP 3 — How long will my job run? (no command — a decision)
+-------------------------------------------------------------
+WHY:      SLURM partitions have maximum time limits. If your job runs longer
+          than the partition allows, SLURM kills it with TIMEOUT and you lose
+          the run. You must choose the right partition before checking
+          availability.
+DECISION:
+  - Quick test (config check, 1-2 epochs to confirm no crash): use test or medium
+  - Real training run (full experiment, many epochs):           use xlong
+  If you are unsure how long a run takes, submit a 2-epoch test on medium
+  first, check the time per epoch in wandb, then estimate total time.
+
+
+STEP 4 — sinfo -s
+-----------------
+COMMAND:  sinfo -s
+WHY:      Shows all partitions on the cluster with their current state and
+          maximum time limits. This confirms which partitions exist and
+          whether they are up.
+INTERPRET:
+  PARTITION  | AVAIL | TIMELIMIT  | NODES | STATE
+  -----------+-------+-----------+-------+-------
+  test       | up    | 1:00:00   | 4     | idle
+  medium     | up    | 24:00:00  | 16    | mix
+  xlong      | up    | 7-00:00:00| 8     | alloc
+
+  - AVAIL=up means the partition is accepting jobs.
+  - TIMELIMIT tells you the maximum your job can run — match this to step 3.
+  - STATE: idle=fully free, mix=partially used, alloc=fully occupied,
+           down=unavailable.
+  - If your target partition shows alloc or down, check step 5 for specific
+    nodes, or consider waiting.
+
+
+STEP 5 — sinfo -o "%20N %10P %10t %20G" | grep -E "idle|mix"
+-------------------------------------------------------------
+COMMAND:  sinfo -o "%20N %10P %10t %20G" | grep -E "idle|mix"
+WHY:      Step 4 gives a partition-level summary. This step shows individual
+          nodes so you can see exactly how many GPUs are free and on which
+          partition. grep filters to only show nodes that have capacity
+          (idle=completely free, mix=partially free).
+INTERPRET:
+  NODE          PARTITION   STATE      GRES
+  gpu-03        xlong       idle       gpu:a100:4
+  gpu-07        medium      mix        gpu:v100:2(IDX:0,2)
+
+  - If you see your target partition in this output: free GPUs exist, submit.
+  - If nothing appears for your target partition: all nodes are fully occupied.
+    Either wait, or switch to a different partition if your time limit allows.
+  - The GRES column tells you the GPU type and count. If your job requests
+    --gres=gpu:1 it will land on whichever node SLURM picks. If you need a
+    specific GPU type (e.g. A100 for large batch), use --gres=gpu:a100:1.
+
+
+STEP 6 — mkdir -p ~/neuRAWns_mmdet/cluster_scripts/logs/
+---------------------------------------------------------
+COMMAND:  mkdir -p ~/neuRAWns_mmdet/cluster_scripts/logs/
+WHY:      Your sbatch scripts write logs to this directory. SLURM does NOT
+          create the directory automatically — if it is missing, SLURM silently
+          fails to write the log file. Your job runs but you have no output,
+          no errors, nothing. Debugging becomes nearly impossible.
+          The -p flag means "create parent directories if needed, and do not
+          error if the directory already exists." Safe to run every time.
+INTERPRET:
+  - No output = directory created or already existed. Either is fine.
+  - Any error = investigate before proceeding.
+
+
+STEP 7 — sbatch
+---------------
+COMMAND:  sbatch ~/neuRAWns_mmdet/cluster_scripts/exp012.sh
+WHY:      This is the actual submission. SLURM reads your script, queues the
+          job, and returns a job ID immediately. The job itself may not start
+          for minutes or hours depending on queue pressure.
+INTERPRET:
+  - Good: "Submitted batch job 12345" — note the job ID for step 8.
+  - Bad:  any error message → read it carefully, it usually tells you exactly
+          what is wrong (wrong partition name, invalid gres, missing file).
+
+
+STEP 8 — squeue
+---------------
+COMMAND:  squeue -u $USER --format="%.10i %.20j %.8T %.10M %.10l %R"
+WHY:      Confirms your job was accepted and is visible in the queue.
+          Runs immediately after submit so you can catch any immediate
+          rejection before walking away.
+INTERPRET:
+  JOBID      NAME                 STATE      TIME       TIME_LIMIT  REASON
+  12345      exp012               PENDING    0:00       2-00:00:00  Resources
+
+  - STATE=PENDING: job is queued, waiting for a free node. Normal.
+  - STATE=RUNNING: job has started. Check wandb for training progress.
+  - STATE=FAILED:  job was rejected immediately — read the REASON column
+                   and check the error log in cluster_scripts/logs/.
+  - REASON column when PENDING:
+      Resources     = waiting for a GPU to free up. Normal queue wait.
+      Priority      = other jobs have higher priority. Will eventually run.
+      QOSMaxJobsPerUser = you have hit your job submission limit. Wait for
+                          one of your jobs to finish first.
+====================================================================================================================================================================
+
+
+Node =  one physical computer in the data centre. 
+        It has CPUs, RAM, and usually multiple GPUs installed in it. For example, gpu-03 is a node that might have 4 GPUs inside it.
+GPU =   the actual hardware your training runs on. Multiple GPUs live inside one node. 
+        When you write --gres=gpu:1 in your sbatch script, you are requesting 1 GPU from whatever node SLURM assigns you.
+Partition = a logical grouping of nodes, defined by the admins. The same physical node can belong to multiple partitions.
+            Partitions exist to enforce policies — time limits, who can use them, priority. So medium might contain 16 nodes with a 24h time limit, 
+            and xlong might contain 8 of those same nodes but with a 7-day limit.
+
+
+Cluster
+├── Partition: test      (time limit: 1h)
+│   ├── Node: gpu-01     (4x V100)
+│   └── Node: gpu-02     (4x V100)
+├── Partition: medium    (time limit: 24h)
+│   ├── Node: gpu-01     (same physical machine!)
+│   ├── Node: gpu-03     (4x A100)
+│   └── Node: gpu-04     (4x A100)
+└── Partition: xlong     (time limit: 7 days)
+    ├── Node: gpu-03
+    └── Node: gpu-04
+
+

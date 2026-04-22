@@ -1,0 +1,13 @@
+=== Attempting Kerberos authentication ===
+Password for souval_g@WMGDS.WMG.WARWICK.AC.UK: 
+kinit exit status: 0
+Ticket cache: FILE:/tmp/krb5cc_1922617598
+Default principal: souval_g@WMGDS.WMG.WARWICK.AC.UK
+
+Valid starting     Expires            Service principal
+03/27/26 14:23:43  03/28/26 00:23:43  krbtgt/WMGDS.WMG.WARWICK.AC.UK@WMGDS.WMG.WARWICK.AC.UK
+	renew until 04/03/26 15:23:43
+=== Starting Kerberos renewal loop ===
+Kerberos renewal loop started (PID: 1617997)
+=== Triggering CIFS mount ===
+=== Starting exp012 ===

@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=exp013
+#SBATCH --job-name=exp012
 #SBATCH --partition=xlong
 #SBATCH --gres=gpu:1
 #SBATCH --time=48:00:00
-#SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp013_%j.out
-#SBATCH --error=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp013_%j.err
+#SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp012_%j.out
+#SBATCH --error=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp012_%j.err
 
 source /networkhome/WMGDS/souval_g/anaconda3/etc/profile.d/conda.sh
 conda activate mmdet12
@@ -31,10 +31,10 @@ echo "Kerberos renewal loop started (PID: $KRENEW_PID)"
 echo "=== Triggering CIFS mount ==="
 ls /cifs/Shares/WMGData/ > /dev/null 2>&1
 
-echo "=== Starting exp013 ==="
+echo "=== Starting exp012 ==="
 cd /networkhome/WMGDS/souval_g/neuRAWns_mmdet
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
-mim train mmdet cconfigs/learnable_process_singleDet/exp13_config.py --launcher none --work-dir work_dirs/exp013
+mim train mmdet configs/learnable_process_singleDet/exp12_config.py --launcher none --work-dir work_dirs/exp012
 
 kill $KRENEW_PID 2>/dev/null

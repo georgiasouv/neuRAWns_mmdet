@@ -1,0 +1,52 @@
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/optim/optimizer/zero_optimizer.py:11: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import \
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/optim/optimizer/zero_optimizer.py:11: DeprecationWarning: `TorchScript` support for functional optimizers is deprecated and will be removed in a future PyTorch release. Consider using the `torch.compile` optimizer instead.
+  from torch.distributed.optim import \
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+wandb: Currently logged in as: georgiasouval (georgiasouval-university-of-warwick) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run pgkcvjuw
+wandb: Tracking run with wandb version 0.22.1
+wandb: Run data is saved locally in /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp014/20260327_161049/vis_data/wandb/run-20260327_161056-pgkcvjuw
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp014
+wandb: ⭐️ View project at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD
+wandb: 🚀 View run at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD/runs/pgkcvjuw
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/mmdetection/mmdet/.mim/tools/train.py", line 121, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/mmdetection/mmdet/.mim/tools/train.py", line 117, in main
+    runner.train()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1765, in train
+    self.load_or_resume()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1699, in load_or_resume
+    self.load_checkpoint(self._load_from)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 2127, in load_checkpoint
+    checkpoint = _load_checkpoint(filename, map_location=map_location)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/checkpoint.py", line 548, in _load_checkpoint
+    return CheckpointLoader.load_checkpoint(filename, map_location, logger)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/checkpoint.py", line 330, in load_checkpoint
+    return checkpoint_loader(filename, map_location)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/checkpoint.py", line 346, in load_from_local
+    raise FileNotFoundError(f'{filename} can not be found.')
+FileNotFoundError: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/.cache/torch/hub/checkpoints/dino-4scale_r50_improved_8xb2-12e_coco_20230818_162607-6f47a913.pth can not be found.
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/mim", line 7, in <module>
+    sys.exit(cli())
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1462, in __call__
+    return self.main(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1383, in main
+    rv = self.invoke(ctx)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1850, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1246, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 814, in invoke
+    return callback(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/train.py", line 100, in cli
+    is_success, msg = train(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/train.py", line 261, in train
+    ret = subprocess.check_call(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/subprocess.py", line 369, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/python3.10', '/networkhome/WMGDS/souval_g/mmdetection/mmdet/.mim/tools/train.py', 'configs/learnable_process_singleDet/exp14_config.py', '--launcher', 'none', '--work-dir', 'work_dirs/exp014']' returned non-zero exit status 1.

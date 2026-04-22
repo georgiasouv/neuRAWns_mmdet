@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/mim", line 7, in <module>
+    sys.exit(cli())
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1462, in __call__
+    return self.main(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1383, in main
+    rv = self.invoke(ctx)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1850, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1246, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 814, in invoke
+    return callback(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/train.py", line 100, in cli
+    is_success, msg = train(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/train.py", line 209, in train
+    raise ValueError(highlighted_error(msg))
+ValueError: [31m[1mThe path cconfigs/learnable_process_singleDet/exp12_config.py doesn't exist and we can not find the config file in codebase mmdet.[0m

@@ -1,5 +1,6 @@
 import numpy as np
 from mmdet.registry import TRANSFORMS
+from mmcv.transforms import BaseTransform
 import mmcv
 import rawpy
 from pathlib import Path
@@ -37,16 +38,15 @@ class LoadRAWImageFromFile:
             
         results['img'] = img
         results['img_shape'] = img.shape
-        results['ori_shape'] = img.shape
         return results
     
 @TRANSFORMS.register_module()
-class PackBayer:
+class PackBayer_3ch(BaseTransform):
     """Pack single-channel Bayer [H,W,1] → 3-channel [H/2,W/2,3]
     by extracting RGGB channels and averaging the two greens.
     Must be applied BEFORE any spatial transforms (Resize, Flip, Crop).
     """
-    def __call__(self, results):
+    def transform(self, results):
         img = results['img']          # [H, W, 1] float32
         img = img.squeeze(2)          # [H, W]
         H, W = img.shape
@@ -60,6 +60,41 @@ class PackBayer:
         packed = np.stack([R, G, B], axis=2)  # [H/2, W/2, 3]
 
         results['img'] = packed
-        results['img_shape'] = packed.shape
-        results['ori_shape'] = packed.shape
+        results['img_shape'] = packed.shape[:2]
+        return results
+    
+@TRANSFORMS.register_module()
+class PackBayer_4ch(BaseTransform):
+    def transform(self, results):
+        img = results['img']          # [H, W, 1] float32
+        img = img.squeeze(2)          # [H, W]
+        H, W = img.shape
+
+        R  = img[0::2, 0::2]
+        G1 = img[0::2, 1::2]
+        G2 = img[1::2, 0::2]
+        B  = img[1::2, 1::2]
+
+        packed = np.stack([R, G1, G2, B], axis=2)  # [H/2, W/2, 4]
+
+        results['img'] = packed
+        results['img_shape'] = packed.shape[:2]
+        return results
+    
+@TRANSFORMS.register_module()
+class NormaliseP99(BaseTransform):
+    """Normalise linear HDR [H,W,1] to [0,1] using 99th percentile.
+    Clips values above p99 to 1.0 to avoid self-illuminating regions
+    (headlights, sun) from collapsing the rest of the dynamic range.
+    Must be applied BEFORE PackBayer.
+    """
+    def transform(self, results):
+        img = results['img'].astype(np.float32)
+        p99 = np.percentile(img, 99)
+        
+        if p99 > 0:
+            img = img / p99
+            
+        img = np.clip(img, 0.0, 1.0)
+        results['img'] = img
         return results

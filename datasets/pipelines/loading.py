@@ -39,48 +39,8 @@ class LoadRAWImageFromFile:
         results['img'] = img
         results['img_shape'] = img.shape
         return results
-    
-@TRANSFORMS.register_module()
-class PackBayer_3ch(BaseTransform):
-    """Pack single-channel Bayer [H,W,1] → 3-channel [H/2,W/2,3]
-    by extracting RGGB channels and averaging the two greens.
-    Must be applied BEFORE any spatial transforms (Resize, Flip, Crop).
-    """
-    def transform(self, results):
-        img = results['img']          # [H, W, 1] float32
-        img = img.squeeze(2)          # [H, W]
-        H, W = img.shape
 
-        R  = img[0::2, 0::2]
-        G1 = img[0::2, 1::2]
-        G2 = img[1::2, 0::2]
-        B  = img[1::2, 1::2]
-        G  = 0.5 * (G1 + G2)
 
-        packed = np.stack([R, G, B], axis=2)  # [H/2, W/2, 3]
-
-        results['img'] = packed
-        results['img_shape'] = packed.shape[:2]
-        return results
-    
-@TRANSFORMS.register_module()
-class PackBayer_4ch(BaseTransform):
-    def transform(self, results):
-        img = results['img']          # [H, W, 1] float32
-        img = img.squeeze(2)          # [H, W]
-        H, W = img.shape
-
-        R  = img[0::2, 0::2]
-        G1 = img[0::2, 1::2]
-        G2 = img[1::2, 0::2]
-        B  = img[1::2, 1::2]
-
-        packed = np.stack([R, G1, G2, B], axis=2)  # [H/2, W/2, 4]
-
-        results['img'] = packed
-        results['img_shape'] = packed.shape[:2]
-        return results
-    
 @TRANSFORMS.register_module()
 class NormaliseP99(BaseTransform):
     """Normalise linear HDR [H,W,1] to [0,1] using 99th percentile.
@@ -97,4 +57,30 @@ class NormaliseP99(BaseTransform):
             
         img = np.clip(img, 0.0, 1.0)
         results['img'] = img
+        return results
+    
+    
+@TRANSFORMS.register_module()
+class PackBayer(BaseTransform):
+    def __init__(self, out_channels=4):
+        self.out_channels = out_channels
+        
+    def transform(self, results):
+        img = results['img']          # [H, W, 1] float32
+        img = img.squeeze(2)          # [H, W]
+        H, W = img.shape
+
+        R  = img[0::2, 0::2]
+        G1 = img[0::2, 1::2]
+        G2 = img[1::2, 0::2]
+        B  = img[1::2, 1::2]
+        
+        if self.out_channels ==3: 
+            G  = 0.5 * (G1 + G2)
+            packed = np.stack([R, G, B], axis=2)  # [H/2, W/2, 3]   
+        else:
+            packed = np.stack([R, G1, G2, B], axis=2)  # [H/2, W/2, 4]
+
+        results['img'] = packed
+        results['img_shape'] = packed.shape[:2]
         return results

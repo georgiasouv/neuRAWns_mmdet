@@ -7,6 +7,7 @@
 custom_imports = dict(
     imports=[
         'modules.raw_preprocessors',   # ConvGamma3ch, ConvGamma4ch, etc.
+        'modules.wrappers',
         'modules.hooks',               # FreezeDetectorHook, SaveBatchImagesHook, etc.
         'datasets.pipelines',          # PackBayer_3ch, PackBayer_4ch, LoadRAWImageFromFile
     ],
@@ -24,7 +25,6 @@ env_cfg = dict(
 
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=True)
 log_level = 'INFO'
-load_from = None
 resume = False
 
 # ── Default hooks ─────────────────────────────────────────────

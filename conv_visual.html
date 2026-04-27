@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Conv2D 4-in 3-out Visualization</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    .grid { display: inline-block; margin: 10px; }
+    .row { display: flex; }
+    .cell {
+      width: 32px; height: 32px;
+      border: 1px solid #999;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+    .kernel {
+      position: absolute;
+      border: 2px solid red;
+      pointer-events: none;
+      box-sizing: content-box;
+    }
+    .channel-title { text-align: center; margin-bottom: 4px; font-weight: bold; }
+    #controls { margin: 10px 0; }
+    #info { margin-top: 10px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <h2>2D Convolution: 4 input channels → 3 output channels (3x3 kernel)</h2>
+  <p>Use the arrows to move the 3x3 kernel over the 6x6 inputs and see the corresponding 4x4 outputs.</p>
+
+  <div id="controls">
+    <button onclick="moveKernel(-1,0)">&larr;</button>
+    <button onclick="moveKernel(1,0)">&rarr;</button>
+    <button onclick="moveKernel(0,-1)">&uarr;</button>
+    <button onclick="moveKernel(0,1)">&darr;</button>
+    <span>Kernel top-left: (<span id="posH">0</span>, <span id="posW">0</span>)</span>
+  </div>
+
+  <div>
+    <div style="display:flex; flex-wrap:wrap;">
+      <div class="grid" id="in0"></div>
+      <div class="grid" id="in1"></div>
+      <div class="grid" id="in2"></div>
+      <div class="grid" id="in3"></div>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; margin-top:20px;">
+      <div class="grid" id="out0"></div>
+      <div class="grid" id="out1"></div>
+      <div class="grid" id="out2"></div>
+    </div>
+  </div>
+
+  <div id="info"></div>
+
+  <script>
+    const H = 6, W = 6;
+    const kH = 3, kW = 3;
+    const outH = H - kH + 1;
+    const outW = W - kW + 1;
+
+    // Simple fixed values for demo
+    const inputs = [];
+    for (let c = 0; c < 4; c++) {
+      const ch = [];
+      for (let i = 0; i < H; i++) {
+        const row = [];
+        for (let j = 0; j < W; j++) {
+          row.push(c*10 + i*W + j); // unique but simple
+        }
+        ch.push(row);
+      }
+      inputs.push(ch);
+    }
+
+    // Small kernels: values 1..9 per (out, in)
+    const kernels = [];
+    for (let o = 0; o < 3; o++) {
+      const ko = [];
+      for (let c = 0; c < 4; c++) {
+        const kc = [];
+        let val = 1 + o*4 + c; // just to vary per (o,c)
+        for (let i = 0; i < kH; i++) {
+          const row = [];
+          for (let j = 0; j < kW; j++) {
+            row.push(val);
+          }
+          kc.push(row);
+        }
+        ko.push(kc);
+      }
+      kernels.push(ko);
+    }
+
+    const bias = [0, 0, 0];
+
+    function convAt(o, h, w) {
+      let sum = 0;
+      for (let c = 0; c < 4; c++) {
+        for (let i = 0; i < kH; i++) {
+          for (let j = 0; j < kW; j++) {
+            sum += inputs[c][h + i][w + j] * kernels[o][c][i][j];
+          }
+        }
+      }
+      return sum + bias[o];
+    }
+
+    // Precompute outputs
+    const outputs = [];
+    for (let o = 0; o < 3; o++) {
+      const ch = [];
+      for (let i = 0; i < outH; i++) {
+        const row = [];
+        for (let j = 0; j < outW; j++) {
+          row.push(convAt(o, i, j));
+        }
+        ch.push(row);
+      }
+      outputs.push(ch);
+    }
+
+    function createGrid(id, rows, cols, title) {
+      const container = document.getElementById(id);
+      container.innerHTML = '';
+      const titleDiv = document.createElement('div');
+      titleDiv.className = 'channel-title';
+      titleDiv.textContent = title;
+      container.appendChild(titleDiv);
+      const gridDiv = document.createElement('div');
+      gridDiv.style.position = 'relative';
+      for (let i = 0; i < rows; i++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+        for (let j = 0; j < cols; j++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          cell.dataset.i = i;
+          cell.dataset.j = j;
+          rowDiv.appendChild(cell);
+        }
+        gridDiv.appendChild(rowDiv);
+      }
+      container.appendChild(gridDiv);
+      return gridDiv;
+    }
+
+    const gridIn0 = createGrid('in0', H, W, 'Input channel 0');
+    const gridIn1 = createGrid('in1', H, W, 'Input channel 1');
+    const gridIn2 = createGrid('in2', H, W, 'Input channel 2');
+    const gridIn3 = createGrid('in3', H, W, 'Input channel 3');
+    const gridOut0 = createGrid('out0', outH, outW, 'Output channel 0');
+    const gridOut1 = createGrid('out1', outH, outW, 'Output channel 1');
+    const gridOut2 = createGrid('out2', outH, outW, 'Output channel 2');
+
+    function fillInputs() {
+      [gridIn0, gridIn1, gridIn2, gridIn3].forEach((grid, c) => {
+        grid.querySelectorAll('.cell').forEach(cell => {
+          const i = parseInt(cell.dataset.i);
+          const j = parseInt(cell.dataset.j);
+          cell.textContent = inputs[c][i][j];
+        });
+      });
+    }
+
+    function fillOutputs() {
+      [gridOut0, gridOut1, gridOut2].forEach((grid, o) => {
+        grid.querySelectorAll('.cell').forEach(cell => {
+          const i = parseInt(cell.dataset.i);
+          const j = parseInt(cell.dataset.j);
+          cell.textContent = outputs[o][i][j];
+        });
+      });
+    }
+
+    fillInputs();
+    fillOutputs();
+
+    let posH = 0, posW = 0;
+
+    // Highlight kernel window and corresponding output cells
+    function updateHighlight() {
+      document.getElementById('posH').textContent = posH;
+      document.getElementById('posW').textContent = posW;
+
+      // Clear previous highlights
+      document.querySelectorAll('.cell').forEach(c => {
+        c.style.backgroundColor = 'white';
+      });
+
+      // Highlight input windows
+      [gridIn0, gridIn1, gridIn2, gridIn3].forEach((grid, c) => {
+        for (let i = posH; i < posH + kH; i++) {
+          for (let j = posW; j < posW + kW; j++) {
+            const cell = grid.querySelector(`.cell[data-i="${i}"][data-j="${j}"]`);
+            cell.style.backgroundColor = '#ffe0e0';
+          }
+        }
+      });
+
+      // Highlight output cells
+      [gridOut0, gridOut1, gridOut2].forEach((grid, o) => {
+        const cell = grid.querySelector(`.cell[data-i="${posH}"][data-j="${posW}"]`);
+        cell.style.backgroundColor = '#e0ffe0';
+      });
+
+      // Update info
+      const info = document.getElementById('info');
+      let html = `<b>At output position (${posH}, ${posW})</b><br/>`;
+      for (let o = 0; o < 3; o++) {
+        html += `out${o}[${posH},${posW}] = `;
+        html += `sum over c=0..3, i,j ( inputs[c][${posH}+i][${posW}+j] * kernel[o][c][i][j] ) + bias[${o}]`;
+        html += ` = <b>${outputs[o][posH][posW]}</b><br/>`;
+      }
+      info.innerHTML = html;
+    }
+
+    function moveKernel(dh, dw) {
+      posH = Math.max(0, Math.min(outH - 1, posH + dh));
+      posW = Math.max(0, Math.min(outW - 1, posW + dw));
+      updateHighlight();
+    }
+
+    updateHighlight();
+  </script>
+</body>
+</html>

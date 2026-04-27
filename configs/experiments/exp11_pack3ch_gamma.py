@@ -7,7 +7,7 @@
 # ─────────────────────────────────────────────────────────────
 
 _base_ = [
-    '../_base_/detectors/rtmdet_s_frozen.py',
+    '../_base_/detectors/rtmdetS_frozen.py',
     '../_base_/datasets/rod_dataset.py',
     '../_base_/default_runtime.py',
 ]
@@ -18,7 +18,7 @@ exp_name = 'exp11'
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='NormaliseP99'),                                   # HDR → [0,1]
-    dict(type='PackBayer_3ch'),                                  # [H/2, W/2, 3]
+    dict(type='PackBayer', out_channels=3),                                  # [H/2, W/2, 3]
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
@@ -28,7 +28,7 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='NormaliseP99'),
-    dict(type='PackBayer_3ch'),
+    dict(type='PackBayer', out_channels=3),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='PackDetInputs')
 ]
@@ -102,3 +102,5 @@ custom_hooks = [
         save_preprocessed=True
     )
 ]
+
+

@@ -5,7 +5,7 @@
 # ─────────────────────────────────────────────────────────────
 
 dataset_type = 'CocoDataset'
-data_root = '/cifs/Shares/WMGData/ROD/yolo/'
+data_root = '/home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/'
 
 # ROD classes mapped to COCO IDs:
 # Car→car(2), Cyclist→bicycle(1), Pedestrian→person(0), Tram→train(6), Truck→truck(7)

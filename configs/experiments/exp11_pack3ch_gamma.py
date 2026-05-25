@@ -5,6 +5,10 @@
 # Detector:     RTMDet-S / Frozen
 # Dataset:      ROD
 # ─────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────
+# 1. update complexity parameters
+# 2. update packbayer out channes
+# ─────────────────────────────────────────────────────────────
 
 _base_ = [
     '../_base_/detectors/rtmdetS_frozen.py',
@@ -14,11 +18,13 @@ _base_ = [
 
 exp_name = 'exp11'
 
+auto_scale_lr = dict(enable=True, base_batch_size=64) 
+
 # ── Pipeline ──────────────────────────────────────────────────
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='NormaliseP99'),                                   # HDR → [0,1]
-    dict(type='PackBayer', out_channels=3),                                  # [H/2, W/2, 3]
+    dict(type='PackBayer', out_channels=3),                      # [H/2, W/2, 3]
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
@@ -72,6 +78,9 @@ vis_backends = [
                 gain=False,
                 detector='RTMDet-S',
                 detector_frozen=True,
+                preprocessor_params=84,        # ← added
+                preprocessor_gmacs=0.0216,     # ← added
+                preprocessor_latency_ms=0.152, # ← added
             )
         )
     )
@@ -100,6 +109,10 @@ custom_hooks = [
         experiment_name=exp_name,
         save_raw=True,
         save_preprocessed=True
+    ),
+    dict(                                   # ← add here
+        type='PreprocessorMonitorHook',
+        log_every_n_steps=50
     )
 ]
 

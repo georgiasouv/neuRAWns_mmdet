@@ -35,68 +35,42 @@ class SaveBatchImagesHook(Hook):
             self._save_batch(runner, data_batch)
             self.first_batch_saved = True
             
-    def _save_batch(self,
-                    runner,  # the runner contains training state
-                    data_batch): # a dict contianing the batch data
-        
+    def _save_batch(self, runner, data_batch):
         current_epoch = runner.epoch + 1
-        
         epoch_dir = os.path.join(self.save_dir, self.experiment_name, f'epoch_{current_epoch}')
         os.makedirs(epoch_dir, exist_ok=True)
-        
-        inputs = data_batch['inputs'] # list of images in the batch
-        
-        # Save each image in the batch
-        batch_size = len(inputs)
-        for i in range(batch_size):
-            img = inputs[i]
-            
-            # Save raw input 
+
+        model = runner.model
+        if hasattr(model, 'module'):
+            model = model.module
+        device = next(model.parameters()).device
+
+        inputs = data_batch['inputs']
+
+        for i, img in enumerate(inputs):
             if self.save_raw:
-                raw_array = img.cpu().numpy() # convert pytorch tensor to numpy array
-                raw_path = os.path.join(epoch_dir, f'raw_img_{i}.npy')
-                np.save(raw_path, raw_array)
-           
-            
+                np.save(os.path.join(epoch_dir, f'raw_img_{i}.npy'), img.cpu().numpy())
+
             if self.save_preprocessed:
                 with torch.no_grad():
-                    model = runner.model
-                    if hasattr(model, 'module'):
-                        model = model.module
-                    
-                    device = next(model.parameters()).device
-                    
-                    # Ensure even dimensions for Bayer packing
-                    _, h, w = img.shape
-                    if h % 2 != 0 or w % 2 != 0:
-                        # Crop to even dimensions
-                        h_even = h - (h % 2)
-                        w_even = w - (w % 2)
-                        img = img[:, :h_even, :w_even]
-                    img_input = img.unsqueeze(0).to(device)
-                    
-                    if hasattr(model.backbone, 'get_preprocessed_for_visualisation'):
-                        preprocessed = model.backbone.get_preprocessed_for_visualisation(img_input)
-                        preprocessed = preprocessed[0]  # [3, H, W]
-                    
-                     # Convert to numpy for saving
-                        preprocessed_np = preprocessed.cpu().numpy()  # [3, H, W]
-                        preprocessed_np = np.transpose(preprocessed_np, (1, 2, 0))  # [H, W, 3]
-                        
-                        # Clip to valid range and convert to uint8
-                        preprocessed_np = np.clip(preprocessed_np, 0, 1) * 255
-                        preprocessed_np = preprocessed_np.astype(np.uint8)
-                        
-                        # Save as PNG
-                        img_pil = Image.fromarray(preprocessed_np, mode='RGB')
-                        png_path = os.path.join(epoch_dir, f'preprocessed_img_{i}.png')
-                        img_pil.save(png_path)
+                    img_input = img.unsqueeze(0).float().to(device)
+
+                    # Run through learnable preprocessor only (not mean/std norm)
+                    preprocessed = model.data_preprocessor.raw_preprocessor(img_input)
+                    preprocessed = preprocessed[0]  # [C, H, W]
+
+                    # Normalise to [0, 255] for visualisation
+                    p = preprocessed.cpu().numpy().transpose(1, 2, 0)  # [H, W, C]
+                    p = p - p.min()
+                    if p.max() > 0:
+                        p = p / p.max()
+                    p = (p * 255).astype(np.uint8)
+
+                    img_pil = Image.fromarray(p, mode='RGB')
+                    img_pil.save(os.path.join(epoch_dir, f'preprocessed_img_{i}.png'))
+
+        runner.logger.info(f'Saved {len(inputs)} images from epoch {current_epoch} to {epoch_dir}')
             
-        runner.logger.info(
-            f'Saved {batch_size} images from epoch {current_epoch} to {epoch_dir}')
-                
-        
-        
-        
-        
+            
+            
         

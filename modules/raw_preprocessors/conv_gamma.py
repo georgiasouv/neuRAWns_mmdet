@@ -24,7 +24,7 @@ class ConvGamma(BasePreprocessor):
                 self.conv.weight[2, 3, c, c] = 1.0
                 
             
-    def forward(self,x):
+    def forward(self,x): # x refers to the tensor=batch of images [batch_size, channels, height, width]
         x = x.clamp(min=1e-6) ** (1 / 2.2)   # clamp before power — avoids NaN on 0
         x = self.conv(x)
         return x
@@ -32,3 +32,9 @@ class ConvGamma(BasePreprocessor):
 
 
 # no need for activation(RELU) || BtachNorm as I have only one convolution
+
+# Dataset.__getitem__(i)     → returns one raw image tensor
+#     ↓
+# DataLoader                 → stacks N of them into [N, C, H, W]
+#     ↓
+# model(batch)               → batch becomes x in forward()

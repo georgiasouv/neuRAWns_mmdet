@@ -22,7 +22,7 @@ exp_name = 'exp12'
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='NormaliseP99'),                                   # HDR → [0,1]
-    dict(type='PackBayer_4ch'),                                  # [H/2, W/2, 4]
+    dict(type='PackBayer', out_channels=4),                             # [H/2, W/2, 4]
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
@@ -32,7 +32,7 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='NormaliseP99'),
-    dict(type='PackBayer_4ch'),
+    dict(type='PackBayer', out_channels=4),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='PackDetInputs')
 ]

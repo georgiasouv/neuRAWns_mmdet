@@ -9,14 +9,14 @@ class ConvGamma(BasePreprocessor):
     def __init__(self, in_channels, out_channels, kernel_size=3):
         super().__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, padding=kernel_size//2, bias=True)
-        with torch.no_grad():
+        with torch.no_grad():  # initial setup, no reason to be on the computation graph
             nn.init.zeros_(self.conv.weight)
             assert self.conv.bias is not None
             nn.init.zeros_(self.conv.bias)
             c = kernel_size // 2
             if in_channels == 3:
                 for i in range(min(in_channels, out_channels)):
-                    self.conv.weight[i, i, c, c] = 1.0
+                    self.conv.weight[i, i, c, c] = 1.0   # identity intialisation
             elif in_channels == 4:
                 self.conv.weight[0, 0, c, c] = 1.0
                 self.conv.weight[1, 1, c, c] = 0.5 # G1 + G2 averaged → G  (prior knowledge: they're both green)

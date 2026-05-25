@@ -5,10 +5,14 @@ from mmdet.registry import MODELS
 
 
 @MODELS.register_module()
-class ConvGamma(BasePreprocessor):
+class ConvGammaGain(BasePreprocessor):
     def __init__(self, in_channels, out_channels, kernel_size=3):
         super().__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, padding=kernel_size//2, bias=True)
+        # Per-channel gain: shape [1, C, 1, 1]
+        # The 1s in dims 0, 2, 3 broadcast over batch and spatial positions
+        # log_gain parameterisation guarantees gain > 0 always (exp is always positive)
+        self.log_gain = nn.Parameter(torch.zeros(1, in_channels, 1, 1))
         with torch.no_grad():
             nn.init.zeros_(self.conv.weight)
             assert self.conv.bias is not None
@@ -25,9 +29,9 @@ class ConvGamma(BasePreprocessor):
                 
             
     def forward(self,x):
-        gain -> gamma ->conv or gamma->conv _.gain or
-        x = x.clamp(min=1e-6) ** (1 / 2.2)   # clamp before power — avoids NaN on 0
-        x = self.conv(x)
+        x = x * torch.exp(self.log_gain)  # gain  — linear domain, before gamma || exp to recover log
+        x = x.clamp(min=1e-6) ** (1 / 2.2)   # gamma — compress dynamic range || clamp before power — avoids NaN on 0 
+        x = self.conv(x)    # conv  — channel mix + spatial
         return x
     
 

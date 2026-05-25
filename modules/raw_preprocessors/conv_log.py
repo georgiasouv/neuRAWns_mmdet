@@ -5,10 +5,11 @@ from mmdet.registry import MODELS
 
 
 @MODELS.register_module()
-class ConvGamma(BasePreprocessor):
+class ConvLog(BasePreprocessor):
     def __init__(self, in_channels, out_channels, kernel_size=3):
         super().__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, padding=kernel_size//2, bias=True)
+        self.log_a = nn.Parameter(torch.zeros(1, in_channels, 1, 1))
         with torch.no_grad():
             nn.init.zeros_(self.conv.weight)
             assert self.conv.bias is not None
@@ -25,7 +26,8 @@ class ConvGamma(BasePreprocessor):
                 
             
     def forward(self,x):
-        x = log a should be positive
+        a = torch.exp(self.log_a) # to ensure a remains positive
+        x = torch.log1p(a * x.clamp(min=1e-6)) # log1p = log(1+x), numerically stable
         x = self.conv(x)
         return x
     

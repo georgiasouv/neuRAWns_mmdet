@@ -37,7 +37,8 @@ class LoadRAWImageFromFile:
             img = np.expand_dims(img, axis=2)
             
         results['img'] = img
-        results['img_shape'] = img.shape
+        results['img_shape'] = img.shape[:2]
+        results['ori_shape'] = img.shape[:2] 
         return results
 
 

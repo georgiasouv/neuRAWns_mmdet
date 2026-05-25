@@ -2,13 +2,16 @@ import torch
 import torch.nn as nn
 from .base_preprocessor import BasePreprocessor
 from mmdet.registry import MODELS
+import math
 
 
 @MODELS.register_module()
-class ConvGamma(BasePreprocessor):
+class ConvPower(BasePreprocessor):
     def __init__(self, in_channels, out_channels, kernel_size=3):
         super().__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, padding=kernel_size//2, bias=True)
+        self.log_pow = nn.Parameter(
+            torch.full((1, in_channels, 1, 1), math.log(2.2)))
         with torch.no_grad():
             nn.init.zeros_(self.conv.weight)
             assert self.conv.bias is not None
@@ -25,7 +28,9 @@ class ConvGamma(BasePreprocessor):
                 
             
     def forward(self,x):
-        x = power gamma should be positive
+        # exponent = torch.exp(self.log_pow) # to ensure pow remains positive
+        exponent = torch.exp(self.log_pow.clamp(-2, 2))  # constrains gamma to [e^-2, e^2] ≈ [0.13, 7.4]
+        x = x.clamp(min=1e-6) ** (1 / exponent)
         x = self.conv(x)
         return x
     

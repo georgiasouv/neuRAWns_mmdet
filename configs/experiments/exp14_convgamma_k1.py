@@ -1,13 +1,18 @@
 # ─────────────────────────────────────────────────────────────
-# experiments/exp12_pack4ch_gamma.py
-# Input:        Packed 4ch (G1 and G2 kept separate)
-# Preprocessor: conv(x^(1/2.2)), fixed gamma, no gain, 4→3 ch
+# experiments/exp14_convgamma_k1.py
+# Input:        Winner of {exp11, exp12} — update in_channels/PackBayer below
+# Preprocessor: Winner of {exp13} — kernel_size=1
+#               → ConvGamma    if exp13 (gain) loses to exp11/12 baseline
+#               → ConvGammaGain if exp13 wins
 # Detector:     RTMDet-S / Frozen
 # Dataset:      ROD
+# Question:     What is the best kernel size? (1 vs 3 vs 5)
 #
-# Differs from exp11 in exactly two places:
-#   1. PackBayer_4ch instead of PackBayer_3ch
-#   2. ConvGamma in_channels=4 (asymmetric init encodes G1+G2 prior)
+# !! ACTION REQUIRED before running !!
+#    1. Check exp13 result vs exp11/12:
+#       - exp13 wins → change type to 'ConvGammaGain'
+#       - exp13 loses → keep type as 'ConvGamma'
+#    2. Update PackBayer out_channels + in_channels to match winner of {11,12}
 # ─────────────────────────────────────────────────────────────
 
 _base_ = [
@@ -16,13 +21,15 @@ _base_ = [
     '../_base_/default_runtime.py',
 ]
 
-exp_name = 'exp12'
+exp_name = 'exp14'
+
+auto_scale_lr = dict(enable=True, base_batch_size=64)
 
 # ── Pipeline ──────────────────────────────────────────────────
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
-    dict(type='NormaliseP99'),                                   # HDR → [0,1]
-    dict(type='PackBayer_4ch'),                                  # [H/2, W/2, 4]
+    dict(type='NormaliseP99'),
+    dict(type='PackBayer', out_channels=3),   # ← update to winner of {11, 12}
     dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
@@ -32,12 +39,11 @@ train_pipeline = [
 test_pipeline = [
     dict(type='LoadRAWImageFromFile'),
     dict(type='NormaliseP99'),
-    dict(type='PackBayer_4ch'),
+    dict(type='PackBayer', out_channels=3),   # ← update to winner of {11, 12}
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='PackDetInputs')
 ]
 
-# ── Override dataloader pipelines ─────────────────────────────
 train_dataloader = dict(dataset=dict(pipeline=train_pipeline))
 val_dataloader   = dict(dataset=dict(pipeline=test_pipeline))
 test_dataloader  = dict(dataset=dict(pipeline=test_pipeline))
@@ -47,10 +53,10 @@ model = dict(
     data_preprocessor=dict(
         type='RAWDetDataPreprocessor',
         preprocessor_cfg=dict(
-            type='ConvGamma',
-            in_channels=4,     # asymmetric init: encodes G1+G2 averaging prior
+            type='ConvGamma',       # ← change to 'ConvGammaGain' if exp13 wins
+            in_channels=3,          # ← update to winner of {11, 12}
             out_channels=3,
-            kernel_size=3,
+            kernel_size=1,          # ← ONLY fixed difference from exp13
         ),
         mean=[103.53, 116.28, 123.675],
         std=[57.375, 57.12, 58.395],
@@ -68,12 +74,12 @@ vis_backends = [
             project='neuRAWns-mmdet-ROD',
             name=exp_name,
             config=dict(
-                input='packed_4ch',
-                preprocessor='ConvGamma',
+                input='packed_3ch',         # ← update if 4ch wins
+                preprocessor='ConvGamma',   # ← update if exp13 wins
                 gamma=1/2.2,
-                in_channels=4,
-                kernel_size=3,
-                gain=False,
+                in_channels=3,              # ← update if 4ch wins
+                kernel_size=1,
+                gain=False,                 # ← set True if exp13 wins
                 detector='RTMDet-S',
                 detector_frozen=True,
             )
@@ -85,24 +91,8 @@ visualizer = dict(vis_backends=vis_backends)
 
 # ── Hooks ─────────────────────────────────────────────────────
 custom_hooks = [
-    dict(
-        type='FreezeDetectorHook',
-        debug_mode=False,
-        check_updates=False,
-        priority='VERY_HIGH'
-    ),
-    dict(
-        type='EarlyStoppingHook',
-        monitor='coco/bbox_mAP',
-        patience=10,
-        rule='greater',
-        min_delta=0.001
-    ),
-    dict(
-        type='SaveBatchImagesHook',
-        save_dir='sample_images',
-        experiment_name=exp_name,
-        save_raw=True,
-        save_preprocessed=True
-    )
+    dict(type='FreezeDetectorHook', debug_mode=False, check_updates=False, priority='VERY_HIGH'),
+    dict(type='EarlyStoppingHook', monitor='coco/bbox_mAP', patience=10, rule='greater', min_delta=0.001),
+    dict(type='SaveBatchImagesHook', save_dir='sample_images', experiment_name=exp_name, save_raw=True, save_preprocessed=True),
+    dict(type='PreprocessorMonitorHook', log_every_n_steps=50)
 ]

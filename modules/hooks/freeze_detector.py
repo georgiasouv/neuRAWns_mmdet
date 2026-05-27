@@ -30,8 +30,7 @@ class FreezeDetectorHook(Hook):
             param.requires_grad = False
         for param in model.data_preprocessor.raw_preprocessor.parameters():
             param.requires_grad = True
-        for param in model.bbox_head.rtm_cls.parameters():
-            param.requires_grad = True
+
 
         # Parameter counts
         total_params     = sum(p.numel() for p in model.parameters())
@@ -51,7 +50,7 @@ class FreezeDetectorHook(Hook):
         # Sanity checks
         if trainable_params == 0:
             raise RuntimeError("No trainable parameters — preprocessor has no parameters.")
-        if trainable_params > 100_000:
+        if trainable_params > 50_000:
             raise RuntimeError(
                 f"Freezing failed: {trainable_params:,} trainable params (expected <50,000)."
             )

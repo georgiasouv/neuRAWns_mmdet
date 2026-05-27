@@ -1,0 +1,17 @@
+Script 3 — RAW → ConvGamma (exp11 weights) → COCO RTMDet-S
+RAW input:       /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/raw/images/test/day-00116.raw
+Preprocessor:    ConvGamma in=3 out=3 k=3
+Preproc weights: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/Desktop/neuRAWns_mmdet/work_dirs/exp11_pack3ch_gamma/epoch_1.pth
+Detector:        COCO RTMDet-S (original weights, unchanged)
+Score thr:       0.3
+Total predictions: 7
+────────────────────────────────────────────────────────────
+#     class        score        x1     y1     x2     y2
+────────────────────────────────────────────────────────────
+0     truck        0.7961      679    404   1045    739
+1     car          0.6866        1    193    568    916
+2     car          0.6764     1040    555   1120    657
+3     car          0.5342     1097    562   1149    632
+4     car          0.5136     1144    492   1335    747
+5     car          0.4674     1268    121   1440    921
+6     person       0.3876       24    365    139    484

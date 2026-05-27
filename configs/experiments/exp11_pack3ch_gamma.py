@@ -23,9 +23,9 @@ auto_scale_lr = dict(enable=True, base_batch_size=64)
 # ── Pipeline ──────────────────────────────────────────────────
 train_pipeline = [
     dict(type='LoadRAWImageFromFile'),
+    dict(type='LoadAnnotations', with_bbox=True),
     dict(type='NormaliseP99'),                                   # HDR → [0,1]
     dict(type='PackBayer', out_channels=3),                      # [H/2, W/2, 3]
-    dict(type='LoadAnnotations', with_bbox=True),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', prob=0.5),
     dict(type='PackDetInputs')

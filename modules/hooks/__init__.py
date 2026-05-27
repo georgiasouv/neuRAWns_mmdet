@@ -6,6 +6,7 @@ from .class_mapping_validation import ClassMappingValidationHook
 from .label_remapping_hook import LabelRemappingHook
 from .save_batch_images_multi import SaveBatchImagesHook_Multi
 from .preprocessor_monitor_hook import PreprocessorMonitorHook
+from .val_predictions_hook import SaveValPredictionsHook
 
 __all__ = ['FreezeDetectorHook', 
            'FreezeMultiDetectorHook',
@@ -14,4 +15,5 @@ __all__ = ['FreezeDetectorHook',
            'SaveBatchImagesHook_Multi',
            'ClassMappingValidationHook', 
            'LabelRemappingHook',
-           'PreprocessorMonitorHook']
+           'PreprocessorMonitorHook',
+           'SaveValPredictionsHook']

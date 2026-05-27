@@ -9,7 +9,7 @@ data_root = '/home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/'
 
 # ROD classes mapped to COCO IDs:
 # Car→car(2), Cyclist→bicycle(1), Pedestrian→person(0), Tram→train(6), Truck→truck(7)
-classes = ('person', 'bicycle', 'car', 'train', 'truck')
+# classes = ('person', 'bicycle', 'car', 'train', 'truck')
 
 # ── Dataloaders ───────────────────────────────────────────────
 # Pipelines are intentionally omitted here.
@@ -28,7 +28,6 @@ train_dataloader = dict(
         ann_file='raw/json_raw_coco_mapped/train.json',
         data_prefix=dict(img='raw/images/train/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
-        metainfo=dict(classes=classes),
         pipeline=None  # overridden per experiment
     )
 )
@@ -44,7 +43,6 @@ val_dataloader = dict(
         data_root=data_root,
         ann_file='raw/json_raw_coco_mapped/val.json',
         data_prefix=dict(img='raw/images/val/'),
-        metainfo=dict(classes=classes),
         pipeline=None  # overridden per experiment
     )
 )
@@ -60,7 +58,6 @@ test_dataloader = dict(
         data_root=data_root,
         ann_file='raw/json_raw_coco_mapped/test.json',
         data_prefix=dict(img='raw/images/test/'),
-        metainfo=dict(classes=classes),
         pipeline=None  # overridden per experiment
     )
 )

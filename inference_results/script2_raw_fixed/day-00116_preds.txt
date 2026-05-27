@@ -1,0 +1,19 @@
+Script 2 — RAW → fixed preprocessing → COCO RTMDet-S
+RAW input:  /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/raw/images/test/day-00116.raw
+Checkpoint: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/.cache/torch/hub/checkpoints/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth
+Preprocessing: pack_bayer → p99_norm → gray_world_awb → gamma(1/2.2)
+Score thr:  0.3
+Packed image size: 928 x 1440
+Total predictions: 9
+────────────────────────────────────────────────────────────
+#     class        score        x1     y1     x2     y2
+────────────────────────────────────────────────────────────
+0     truck        0.7895      679    404   1045    739
+1     car          0.7558        1    205    568    915
+2     car          0.7090     1039    555   1119    657
+3     car          0.5305     1097    561   1149    632
+4     truck        0.4778     1147    402   1352    743
+5     car          0.4502     1268    126   1440    921
+6     person       0.4350       24    360    139    484
+7     car          0.3092     1120    563   1163    634
+8     car          0.3013     1099    516   1176    636

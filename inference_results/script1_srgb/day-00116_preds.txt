@@ -1,0 +1,15 @@
+Script 1 — sRGB inference (COCO pretrained, ROD classes only)
+Image:      /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/srgb/images/test/day-00116.jpg
+Checkpoint: /home/souval_g_WMGDS.WMG.WARWICK.AC.UK/.cache/torch/hub/checkpoints/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth
+Score thr:  0.3
+Total predictions: 7
+────────────────────────────────────────────────────────────
+#     class        score        x1     y1     x2     y2
+────────────────────────────────────────────────────────────
+0     truck        0.7866     1358    807   2090   1480
+1     car          0.7647        2    416   1136   1832
+2     car          0.6675     2079   1110   2235   1312
+3     car          0.5398     2193   1121   2295   1266
+4     truck        0.5318     2296    808   2702   1488
+5     truck        0.4360     2533    242   2880   1832
+6     person       0.3735       48    720    284    965

@@ -43,7 +43,7 @@ model = dict(
     ),
     bbox_head=dict(
         type='RTMDetSepBNHead',
-        num_classes=5,           # ROD mapped classes, not 80
+        num_classes=80,           
         in_channels=128,
         stacked_convs=2,
         feat_channels=128,

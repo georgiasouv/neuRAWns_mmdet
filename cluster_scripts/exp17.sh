@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=exp17
-#SBATCH --partition=xlong
+#SBATCH --partition=test
+#SBATCH --gres=gpu:nvidia_rtx_pro_6000_blackwell_server_edition:1
 #SBATCH --gres=gpu:1
 #SBATCH --time=48:00:00
 #SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp17_%j.out

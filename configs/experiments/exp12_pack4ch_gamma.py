@@ -65,7 +65,7 @@ vis_backends = [
     dict(
         type='WandbVisBackend',
         init_kwargs=dict(
-            project='neuRAWns-mmdet-ROD',
+            project='neuRAWns-mmdet-ROD-v2',
             name=exp_name,
             config=dict(
                 input='packed_4ch',

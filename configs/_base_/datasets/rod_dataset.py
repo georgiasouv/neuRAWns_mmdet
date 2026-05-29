@@ -68,7 +68,8 @@ val_evaluator = dict(
     ann_file=data_root + 'raw/json_raw_coco_mapped/val.json',
     metric='bbox',
     format_only=False,
-    classwise=True
+    classwise=True,
+    label_to_catid={0:1, 1:2, 2:3, 6:7, 7:8} 
 )
 
 test_evaluator = dict(
@@ -76,5 +77,6 @@ test_evaluator = dict(
     ann_file=data_root + 'raw/json_raw_coco_mapped/test.json',
     metric='bbox',
     format_only=False,
-    classwise=True
+    classwise=True,
+    label_to_catid={0:1, 1:2, 2:3, 6:7, 7:8} 
 )

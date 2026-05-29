@@ -84,13 +84,6 @@ class PackBayer(BaseTransform):
 
         results['img'] = packed
         results['img_shape'] = packed.shape[:2]
-        # ── Scale GT boxes from full res → packed res ─────────────
-        if 'gt_bboxes' in results:
-            results['gt_bboxes'].tensor[:, [0, 2]] /= 2.0  # x coords
-            results['gt_bboxes'].tensor[:, [1, 3]] /= 2.0  # y coords
-        # print(f'[PackBayer] img_shape: {results["img_shape"]}')
-        # if 'gt_bboxes' in results:
-        #     print(f'[PackBayer] gt_bboxes sample: {results["gt_bboxes"].tensor[:2]}')
-        # else:
-        #     print('[PackBayer] NO gt_bboxes in results')   
+        results['ori_shape'] = packed.shape[:2]   # ← packed IS the original for downstream
+        
         return results

@@ -39,3 +39,6 @@ data/
 *.swo
 *~mmdetection/work_dirs/
 mmdetection/data/
+
+# Ignore a specific subfolder
+work_dirs_SmokeTests/

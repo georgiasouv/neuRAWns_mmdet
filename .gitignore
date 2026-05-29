@@ -37,4 +37,5 @@ data/
 .DS_Store
 *.swp
 *.swo
-*~
+*~mmdetection/work_dirs/
+mmdetection/data/

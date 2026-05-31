@@ -1,0 +1,53 @@
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 149, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 67, in main
+    args = parse_args()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 60, in parse_args
+    args = parser.parse_args()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/argparse.py", line 1833, in parse_args
+    args, argv = self.parse_known_args(args, namespace)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/argparse.py", line 1866, in parse_known_args
+    namespace, args = self._parse_known_args(args, namespace)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/argparse.py", line 2079, in _parse_known_args
+    start_index = consume_optional(start_index)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/argparse.py", line 2019, in consume_optional
+    take_action(action, args, option_string)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/argparse.py", line 1943, in take_action
+    action(self, namespace, argument_values, option_string)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/config/config.py", line 1841, in __call__
+    options[key] = self._parse_iterable(val)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/config/config.py", line 1813, in _parse_iterable
+    element = DictAction._parse_iterable(val[:comma_idx])
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/config/config.py", line 1813, in _parse_iterable
+    element = DictAction._parse_iterable(val[:comma_idx])
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/config/config.py", line 1813, in _parse_iterable
+    element = DictAction._parse_iterable(val[:comma_idx])
+  [Previous line repeated 985 more times]
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/config/config.py", line 1812, in _parse_iterable
+    comma_idx = find_next_comma(val)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/config/config.py", line 1785, in find_next_comma
+    assert (string.count('(') == string.count(')')) and (
+RecursionError: maximum recursion depth exceeded while calling a Python object
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/mim", line 7, in <module>
+    sys.exit(cli())
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1462, in __call__
+    return self.main(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1383, in main
+    rv = self.invoke(ctx)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1850, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1246, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 814, in invoke
+    return callback(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/test.py", line 109, in cli
+    is_success, msg = test(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/test.py", line 288, in test
+    ret = subprocess.check_call(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/subprocess.py", line 369, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/python3.10', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py', 'configs/experiments/exp11_pack3ch_gamma.py', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11/best_coco_bbox_mAP_epoch_17.pth', '--launcher', 'none', '--work-dir', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11_test', '--cfg-options', 'train_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'val_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'test_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'val_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/val.json', 'test_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/test.json', 'load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth', "custom_hooks=[dict(type='FreezeDetectorHook', debug_mode=False, check_updates=False, priority='VERY_HIGH'), dict(type='SaveBatchImagesHook', save_dir='sample_images', experiment_name='exp11', save_raw=True, save_preprocessed=True)]"]' returned non-zero exit status 1.

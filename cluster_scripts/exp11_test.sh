@@ -1,10 +1,10 @@
 #!/bin/bash
+#SBATCH --job-name=exp11_test
 #SBATCH --partition=test
 #SBATCH --gres=gpu:1
-#SBATCH --gres=gpu:1
-#SBATCH --time=48:00:00
-#SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp15_%j.out
-#SBATCH --error=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp15_%j.err
+#SBATCH --time=02:00:00
+#SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs_test/exp11_test_%j.out
+#SBATCH --error=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs_test/exp11_test_%j.err
 
 # ── Environment ───────────────────────────────────────────────
 source /networkhome/WMGDS/souval_g/anaconda3/etc/profile.d/conda.sh
@@ -34,14 +34,18 @@ echo "Kerberos renewal loop started (PID: $KRENEW_PID)"
 echo "=== Triggering CIFS mount ==="
 ls /cifs/Shares/WMGData/ > /dev/null 2>&1
 
-# ── Training ──────────────────────────────────────────────────
-echo "=== Starting exp15 ==="
+# ── Test ─────────────────────────────────────────────────────
+echo "=== Starting exp11 test ==="
 cd /networkhome/WMGDS/souval_g/neuRAWns_mmdet
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
-mim train mmdet configs/experiments/exp15_convgamma_k5.py \
+# Update CHECKPOINT to point to the best checkpoint from training
+CHECKPOINT=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11/best_coco_bbox_mAP_epoch_17.pth
+
+mim test mmdet /networkhome/WMGDS/souval_g/neuRAWns_mmdet/configs/experiments/exp11_test.py \
     --launcher none \
-    --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp15 \
+    --checkpoint $CHECKPOINT \
+    --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11_test \
     --cfg-options \
         train_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
         val_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
@@ -52,4 +56,4 @@ mim train mmdet configs/experiments/exp15_convgamma_k5.py \
 
 # ── Cleanup ───────────────────────────────────────────────────
 kill $KRENEW_PID 2>/dev/null
-echo "=== exp15 finished ==="
+echo "=== exp11 test finished ==="

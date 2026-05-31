@@ -1,0 +1,116 @@
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+wandb: Currently logged in as: georgiasouval (georgiasouval-university-of-warwick) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run gw23242d
+wandb: Tracking run with wandb version 0.22.1
+wandb: Run data is saved locally in /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11_test/20260531_171022/vis_data/wandb/run-20260531_171024-gw23242d
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp11
+wandb: ⭐️ View project at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD-v2
+wandb: 🚀 View run at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD-v2/runs/gw23242d
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/data/dataloader.py:424: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 149, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 145, in main
+    runner.test()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1818, in test
+    self.call_hook('before_run')
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1839, in call_hook
+    getattr(hook, fn_name)(self, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/hooks/early_stopping_hook.py", line 130, in before_run
+    assert hasattr(runner.train_loop, 'stop_training'), \
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 591, in train_loop
+    self._train_loop = self.build_train_loop(self._train_loop)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1520, in build_train_loop
+    loop = LOOPS.build(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/registry.py", line 570, in build
+    return self.build_func(cfg, *args, **kwargs, registry=self)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/build_functions.py", line 121, in build_from_cfg
+    obj = obj_cls(**args)  # type: ignore
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 46, in __init__
+    super().__init__(runner, dataloader)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/base_loop.py", line 26, in __init__
+    self.dataloader = runner.build_dataloader(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1370, in build_dataloader
+    dataset = DATASETS.build(dataset_cfg)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/registry.py", line 570, in build
+    return self.build_func(cfg, *args, **kwargs, registry=self)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/build_functions.py", line 121, in build_from_cfg
+    obj = obj_cls(**args)  # type: ignore
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/base_det_dataset.py", line 51, in __init__
+    super().__init__(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/dataset/base_dataset.py", line 247, in __init__
+    self.full_init()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/base_det_dataset.py", line 76, in full_init
+    self.data_list = self.load_data_list()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/coco.py", line 67, in load_data_list
+    self.coco = self.COCOAPI(local_path)
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/api_wrappers/coco_api.py", line 25, in __init__
+    super().__init__(annotation_file=annotation_file)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/pycocotools/coco.py", line 81, in __init__
+    with open(annotation_file, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/raw/json_raw_coco_mapped/train.json'
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 149, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 145, in main
+    runner.test()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1818, in test
+    self.call_hook('before_run')
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1839, in call_hook
+    getattr(hook, fn_name)(self, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/hooks/early_stopping_hook.py", line 130, in before_run
+    assert hasattr(runner.train_loop, 'stop_training'), \
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 591, in train_loop
+    self._train_loop = self.build_train_loop(self._train_loop)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1520, in build_train_loop
+    loop = LOOPS.build(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/registry.py", line 570, in build
+    return self.build_func(cfg, *args, **kwargs, registry=self)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/build_functions.py", line 121, in build_from_cfg
+    obj = obj_cls(**args)  # type: ignore
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 46, in __init__
+    super().__init__(runner, dataloader)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/base_loop.py", line 26, in __init__
+    self.dataloader = runner.build_dataloader(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1370, in build_dataloader
+    dataset = DATASETS.build(dataset_cfg)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/registry.py", line 570, in build
+    return self.build_func(cfg, *args, **kwargs, registry=self)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/registry/build_functions.py", line 121, in build_from_cfg
+    obj = obj_cls(**args)  # type: ignore
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/base_det_dataset.py", line 51, in __init__
+    super().__init__(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/dataset/base_dataset.py", line 247, in __init__
+    self.full_init()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/base_det_dataset.py", line 76, in full_init
+    self.data_list = self.load_data_list()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/coco.py", line 67, in load_data_list
+    self.coco = self.COCOAPI(local_path)
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/datasets/api_wrappers/coco_api.py", line 25, in __init__
+    super().__init__(annotation_file=annotation_file)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/pycocotools/coco.py", line 81, in __init__
+    with open(annotation_file, 'r') as f:
+FileNotFoundError: [Errno 2] No such file or directory: '/home/souval_g_WMGDS.WMG.WARWICK.AC.UK/data/ROD/yolo/raw/json_raw_coco_mapped/train.json'
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/mim", line 7, in <module>
+    sys.exit(cli())
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1462, in __call__
+    return self.main(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1383, in main
+    rv = self.invoke(ctx)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1850, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1246, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 814, in invoke
+    return callback(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/test.py", line 109, in cli
+    is_success, msg = test(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/test.py", line 288, in test
+    ret = subprocess.check_call(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/subprocess.py", line 369, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/python3.10', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py', 'configs/experiments/exp11_pack3ch_gamma.py', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11/best_coco_bbox_mAP_epoch_17.pth', '--launcher', 'none', '--work-dir', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11_test', '--cfg-options', 'test_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'test_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/test.json', 'load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth']' returned non-zero exit status 1.

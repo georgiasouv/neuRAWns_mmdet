@@ -1,10 +1,10 @@
 #!/bin/bash
+#SBATCH --job-name=exp15_test
 #SBATCH --partition=test
 #SBATCH --gres=gpu:1
-#SBATCH --gres=gpu:1
-#SBATCH --time=48:00:00
-#SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp15_%j.out
-#SBATCH --error=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs/exp15_%j.err
+#SBATCH --time=02:00:00
+#SBATCH --output=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs_test/exp15_test_%j.out
+#SBATCH --error=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/cluster_scripts/logs_test/exp15_test_%j.err
 
 # ── Environment ───────────────────────────────────────────────
 source /networkhome/WMGDS/souval_g/anaconda3/etc/profile.d/conda.sh
@@ -34,22 +34,17 @@ echo "Kerberos renewal loop started (PID: $KRENEW_PID)"
 echo "=== Triggering CIFS mount ==="
 ls /cifs/Shares/WMGData/ > /dev/null 2>&1
 
-# ── Training ──────────────────────────────────────────────────
-echo "=== Starting exp15 ==="
+# ── Test ──────────────────────────────────────────────────────
+echo "=== Starting exp15 test ==="
 cd /networkhome/WMGDS/souval_g/neuRAWns_mmdet
 export PYTHONPATH="${PYTHONPATH}:$(pwd)"
 
-mim train mmdet configs/experiments/exp15_convgamma_k5.py \
-    --launcher none \
-    --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp15 \
-    --cfg-options \
-        train_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
-        val_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
-        test_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
-        val_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/val.json \
-        test_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/test.json \
-        load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth
+# !! UPDATE THIS: replace epoch_X with the actual best epoch number
+# Run: ls work_dirs/exp15/best_coco_bbox_mAP_*.pth
+CHECKPOINT=/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp15/best_coco_bbox_mAP_epoch_4.pth
+
+mim test mmdet /networkhome/WMGDS/souval_g/neuRAWns_mmdet/configs/experiments/exp15_test.py     --launcher none     --checkpoint $CHECKPOINT     --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp15_test     --cfg-options         test_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/         test_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/test.json         load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth
 
 # ── Cleanup ───────────────────────────────────────────────────
 kill $KRENEW_PID 2>/dev/null
-echo "=== exp15 finished ==="
+echo "=== exp15 test finished ==="

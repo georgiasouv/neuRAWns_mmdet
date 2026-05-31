@@ -1,0 +1,142 @@
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+wandb: Currently logged in as: georgiasouval (georgiasouval-university-of-warwick) to https://api.wandb.ai. Use `wandb login --relogin` to force relogin
+wandb: setting up run 9kt3s6m8
+wandb: Tracking run with wandb version 0.22.1
+wandb: Run data is saved locally in /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp13/20260529_212309/vis_data/wandb/run-20260529_212311-9kt3s6m8
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run exp13
+wandb: ⭐️ View project at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD-v2
+wandb: 🚀 View run at https://wandb.ai/georgiasouval-university-of-warwick/neuRAWns-mmdet-ROD-v2/runs/9kt3s6m8
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/data/dataloader.py:424: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/data/dataloader.py:424: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/data/dataloader.py:432: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/layers/se_layer.py:158: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/backbones/csp_darknet.py:118: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/functional.py:505: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /pytorch/aten/src/ATen/native/TensorShape.cpp:4381.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/data/dataloader.py:432: UserWarning: This DataLoader will create 2 worker processes in total. Our suggested max number of worker in current system is 1, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  self.check_worker_number_rationality()
+/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/layers/se_layer.py:158: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/backbones/csp_darknet.py:118: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast(enabled=False):
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/train.py", line 121, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/train.py", line 117, in main
+    runner.train()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1777, in train
+    model = self.train_loop.run()  # type: ignore
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 105, in run
+    self.runner.val_loop.run()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 379, in run
+    self.run_iter(idx, data_batch)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 404, in run_iter
+    outputs = self.runner.model.val_step(data_batch)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/model/base_model/base_model.py", line 133, in val_step
+    return self._run_forward(data, mode='predict')  # type: ignore
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/model/base_model/base_model.py", line 361, in _run_forward
+    results = self(**data, mode=mode)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/detectors/base.py", line 94, in forward
+    return self.predict(inputs, data_samples)
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/detectors/single_stage.py", line 110, in predict
+    results_list = self.bbox_head.predict(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 197, in predict
+    predictions = self.predict_by_feat(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 279, in predict_by_feat
+    results = self._predict_by_feat_single(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 423, in _predict_by_feat_single
+    return self._bbox_post_process(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 485, in _bbox_post_process
+    det_bboxes, keep_idxs = batched_nms(bboxes, results.scores,
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmcv/ops/nms.py", line 319, in batched_nms
+    dets, keep = nms_op(boxes_for_nms[mask], scores[mask], **nms_cfg_)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/utils/misc.py", line 395, in new_func
+    output = old_func(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmcv/ops/nms.py", line 127, in nms
+    inds = NMSop.apply(boxes, scores, iou_threshold, offset, score_threshold,
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/autograd/function.py", line 596, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmcv/ops/nms.py", line 27, in forward
+    inds = ext_module.nms(
+RuntimeError: nms_impl: implementation for device cuda:0 not found.
+
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/train.py", line 121, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/train.py", line 117, in main
+    runner.train()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 1777, in train
+    model = self.train_loop.run()  # type: ignore
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 105, in run
+    self.runner.val_loop.run()
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 379, in run
+    self.run_iter(idx, data_batch)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/loops.py", line 404, in run_iter
+    outputs = self.runner.model.val_step(data_batch)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/model/base_model/base_model.py", line 133, in val_step
+    return self._run_forward(data, mode='predict')  # type: ignore
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/model/base_model/base_model.py", line 361, in _run_forward
+    results = self(**data, mode=mode)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/detectors/base.py", line 94, in forward
+    return self.predict(inputs, data_samples)
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/detectors/single_stage.py", line 110, in predict
+    results_list = self.bbox_head.predict(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 197, in predict
+    predictions = self.predict_by_feat(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 279, in predict_by_feat
+    results = self._predict_by_feat_single(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 423, in _predict_by_feat_single
+    return self._bbox_post_process(
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/models/dense_heads/base_dense_head.py", line 485, in _bbox_post_process
+    det_bboxes, keep_idxs = batched_nms(bboxes, results.scores,
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmcv/ops/nms.py", line 319, in batched_nms
+    dets, keep = nms_op(boxes_for_nms[mask], scores[mask], **nms_cfg_)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/utils/misc.py", line 395, in new_func
+    output = old_func(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmcv/ops/nms.py", line 127, in nms
+    inds = NMSop.apply(boxes, scores, iou_threshold, offset, score_threshold,
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/torch/autograd/function.py", line 596, in apply
+    return super().apply(*args, **kwargs)  # type: ignore[misc]
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmcv/ops/nms.py", line 27, in forward
+    inds = ext_module.nms(
+RuntimeError: nms_impl: implementation for device cuda:0 not found.
+
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/mim", line 7, in <module>
+    sys.exit(cli())
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1462, in __call__
+    return self.main(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1383, in main
+    rv = self.invoke(ctx)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1850, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1246, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 814, in invoke
+    return callback(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/train.py", line 100, in cli
+    is_success, msg = train(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/train.py", line 261, in train
+    ret = subprocess.check_call(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/subprocess.py", line 369, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/python3.10', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/train.py', 'configs/experiments/exp13_convgammagain.py', '--launcher', 'none', '--work-dir', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp13', '--cfg-options', 'train_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'val_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'test_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/', 'val_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/val.json', 'test_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/test.json', 'load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth']' returned non-zero exit status 1.

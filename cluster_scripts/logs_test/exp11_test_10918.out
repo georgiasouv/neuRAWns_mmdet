@@ -1,0 +1,15 @@
+=== Attempting Kerberos authentication ===
+Password for souval_g@WMGDS.WMG.WARWICK.AC.UK: 
+kinit exit status: 0
+Ticket cache: FILE:/tmp/krb5cc_1922617598
+Default principal: souval_g@WMGDS.WMG.WARWICK.AC.UK
+
+Valid starting     Expires            Service principal
+05/31/26 17:12:25  06/01/26 03:12:25  krbtgt/WMGDS.WMG.WARWICK.AC.UK@WMGDS.WMG.WARWICK.AC.UK
+	renew until 06/07/26 17:12:25
+=== Starting Kerberos renewal loop ===
+Kerberos renewal loop started (PID: 1043126)
+=== Triggering CIFS mount ===
+=== Starting exp11 test ===
+Testing command is /networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/python3.10 /networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py configs/experiments/exp11_pack3ch_gamma.py /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11/best_coco_bbox_mAP_epoch_17.pth --launcher none --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp11_test --cfg-options train_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ val_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ test_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ val_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/val.json test_evaluator.ann_file=/networkhome/WMGDS/souval_g/data/ROD/yolo/raw/json_raw_coco_mapped/test.json load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth custom_hooks=[dict(type='FreezeDetectorHook', debug_mode=False, check_updates=False, priority='VERY_HIGH'), dict(type='SaveBatchImagesHook', save_dir='sample_images', experiment_name='exp11', save_raw=True, save_preprocessed=True)]. 
+=== exp11 test finished ===

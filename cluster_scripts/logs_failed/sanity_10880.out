@@ -1,0 +1,7 @@
+=== Environment check ===
+torch: 2.11.0+cu128
+cuda: 12.8
+cuda available: True
+gpu: NVIDIA RTX PRO 6000 Blackwell Server Edition
+=== Smoke test 1 epoch ===
+=== Sanity check done ===

@@ -1,0 +1,32 @@
+/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
+  check_for_updates()
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 149, in <module>
+    main()
+  File "/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py", line 131, in main
+    runner = Runner.from_cfg(cfg)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 462, in from_cfg
+    runner = cls(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mmengine/runner/runner.py", line 326, in __init__
+    raise ValueError(
+ValueError: param_scheduler should be None when optim_wrapper is None, but got [{'type': 'LinearLR', 'start_factor': 0.1, 'by_epoch': False, 'begin': 0, 'end': 500}, {'type': 'CosineAnnealingLR', 'by_epoch': True, 'begin': 0, 'end': 100}]
+Traceback (most recent call last):
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/mim", line 7, in <module>
+    sys.exit(cli())
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1462, in __call__
+    return self.main(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1383, in main
+    rv = self.invoke(ctx)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1850, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 1246, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/click/core.py", line 814, in invoke
+    return callback(*args, **kwargs)
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/test.py", line 109, in cli
+    is_success, msg = test(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/site-packages/mim/commands/test.py", line 288, in test
+    ret = subprocess.check_call(
+  File "/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/lib/python3.10/subprocess.py", line 369, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/networkhome/WMGDS/souval_g/anaconda3/envs/mmdet12/bin/python3.10', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/mmdetection/mmdet/.mim/tools/test.py', 'configs/experiments/exp10_srgb_baseline.py', '/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth', '--launcher', 'none', '--work-dir', '/networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp10_test', '--cfg-options', 'load_from=/networkhome/WMGDS/souval_g/checkpoints_mmdet/rtmdet_s_8xb32-300e_coco_20220905_161602-387a891e.pth']' returned non-zero exit status 1.

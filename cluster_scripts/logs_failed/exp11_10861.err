@@ -1,3 +1,0 @@
-/networkhome/WMGDS/souval_g/.local/lib/python3.10/site-packages/albumentations/__init__.py:28: UserWarning: A new version of Albumentations is available: '2.0.8' (you have '2.0.5'). Upgrade using: pip install -U albumentations. To disable automatic update checks, set the environment variable NO_ALBUMENTATIONS_UPDATE to 1.
-  check_for_updates()
-slurmstepd: error: *** JOB 10861 ON gpu-04 CANCELLED AT 2026-05-29T21:12:35 ***

@@ -1,100 +1,90 @@
 # ─────────────────────────────────────────────────────────────
-# experiments/exp10_srgb_baseline.py
-# Input:        sRGB (standard 3ch JPEG/PNG)
-# Preprocessor: None (Full ISP already applied)
-# Detector:     RTMDet-S / standard (NOT frozen — upper reference)
+# experiments/exp10_srgb_baseline_test.py
+# Input:        sRGB images (standard JPEG)
+# Preprocessor: None — detector receives sRGB directly
+# Detector:     RTMDet-S / COCO pretrained, frozen
 # Dataset:      ROD (sRGB split)
-# Purpose:      Upper reference — best possible with clean sRGB input
+# Purpose:      Upper reference — best case for the frozen detector
 # ─────────────────────────────────────────────────────────────
 
 _base_ = [
     '../_base_/detectors/rtmdetS_frozen.py',
-    '../_base_/datasets/rod_dataset.py',
     '../_base_/default_runtime.py',
 ]
 
 exp_name = 'exp10'
 
-auto_scale_lr = dict(enable=True, base_batch_size=64)
-
 # ── Pipeline ──────────────────────────────────────────────────
-# Standard pipeline: loads sRGB images, no RAW-specific steps
-train_pipeline = [
-    dict(type='LoadImageFromFile'),          # standard mmdet loader, not LoadRAWImageFromFile
-    dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', scale=(1333, 800), keep_ratio=True),
-    dict(type='RandomFlip', prob=0.5),
-    dict(type='PackDetInputs')
-]
-
+# Standard sRGB pipeline — no RAW loading, no packing, no P99 norm
 test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='Resize', scale=(1333, 800), keep_ratio=True),
     dict(type='PackDetInputs')
 ]
 
-# ── Override dataloader pipelines ─────────────────────────────
-# IMPORTANT: also point to sRGB image paths, not raw/images/
-train_dataloader = dict(
-    dataset=dict(
-        pipeline=train_pipeline,
-        ann_file='srgb/json_srgb_coco_mapped/train.json',   # ← update to your sRGB split path
-        data_prefix=dict(img='srgb/images/train/'),          # ← update to your sRGB split path
-    )
-)
-val_dataloader = dict(
-    dataset=dict(
-        pipeline=test_pipeline,
-        ann_file='srgb/json_srgb_coco_mapped/val.json',
-        data_prefix=dict(img='srgb/images/val/'),
-    )
-)
+# ── Dataloaders ───────────────────────────────────────────────
 test_dataloader = dict(
+    batch_size=1,
+    num_workers=2,
+    persistent_workers=True,
+    drop_last=False,
+    sampler=dict(type='DefaultSampler', shuffle=False),
     dataset=dict(
-        pipeline=test_pipeline,
-        ann_file='srgb/json_srgb_coco_mapped/test.json',
+        type='CocoDataset',
+        data_root='/networkhome/WMGDS/souval_g/data/ROD/yolo/',
+        ann_file='srgb/json_raw_coco_mapped/test.json',
         data_prefix=dict(img='srgb/images/test/'),
+        pipeline=test_pipeline
     )
 )
 
-# ── Model ─────────────────────────────────────────────────────
-# Standard DetDataPreprocessor — no RAW preprocessor module
-# Detector is NOT frozen: this is inference / fine-tune upper bound
+# ── Evaluator ─────────────────────────────────────────────────
+test_evaluator = dict(
+    type='CocoMetric',
+    ann_file='/networkhome/WMGDS/souval_g/data/ROD/yolo/srgb/json_raw_coco_mapped/test.json',
+    metric='bbox',
+    classwise=True,
+    label_to_catid={0: 1, 1: 2, 2: 3, 6: 7, 7: 8}
+)
+
+# ── Model override ────────────────────────────────────────────
+# Use standard DetDataPreprocessor — no RAWDetDataPreprocessor needed
 model = dict(
     data_preprocessor=dict(
         type='DetDataPreprocessor',
         mean=[103.53, 116.28, 123.675],
         std=[57.375, 57.12, 58.395],
-        bgr_to_rgb=True,
-        pad_size_divisor=32
+        bgr_to_rgb=False,
+        batch_augments=None
     )
 )
 
-# Override the FreezeDetectorHook — detector must NOT be frozen for upper reference
-custom_hooks = [
-    dict(
-        type='EarlyStoppingHook',
-        monitor='coco/bbox_mAP',
-        patience=10,
-        rule='greater',
-        min_delta=0.001
-    ),
-]
+# ── Hooks ─────────────────────────────────────────────────────
+# No FreezeDetectorHook needed — no training, no preprocessor to freeze
+# No EarlyStoppingHook — test only
+custom_hooks = []
 
+train_cfg = None
+optim_wrapper = None
+param_scheduler = None
+train_dataloader = None
+val_cfg = None
+val_dataloader = None
+val_evaluator = None
 # ── WandB ─────────────────────────────────────────────────────
 vis_backends = [
     dict(type='LocalVisBackend'),
     dict(
         type='WandbVisBackend',
         init_kwargs=dict(
-            project='neuRAWns-mmdet-ROD',
+            project='neuRAWns-mmdet-ROD-v2',
             name=exp_name,
             config=dict(
                 input='sRGB',
                 preprocessor='None',
                 detector='RTMDet-S',
-                detector_frozen=False,
-                note='Upper reference — full ISP sRGB input',
+                detector_frozen=True,
+                purpose='upper_reference',
             )
         )
     )

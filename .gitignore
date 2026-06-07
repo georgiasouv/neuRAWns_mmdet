@@ -13,6 +13,9 @@ work_dirs/
 *.pth
 *.pkl
 
+*.err
+*.out
+
 # Jupyter
 .ipynb_checkpoints/
 *.ipynb

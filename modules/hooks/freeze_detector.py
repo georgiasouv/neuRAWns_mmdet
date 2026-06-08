@@ -4,11 +4,12 @@ from mmengine.registry import HOOKS
 
 @HOOKS.register_module()
 class FreezeDetectorHook(Hook):
-    def __init__(self, priority='VERY_HIGH', debug_mode=False, check_updates=False):
+    def __init__(self, priority='VERY_HIGH', debug_mode=False, check_updates=False, max_trainable=50_000):
         super().__init__()
         self.priority = priority
         self.debug_mode = debug_mode
         self.check_updates = check_updates
+        self.max_trainable = max_trainable
         self.initial_weights = {}
         self.initial_detector_weights = {}
 
@@ -50,9 +51,10 @@ class FreezeDetectorHook(Hook):
         # Sanity checks
         if trainable_params == 0:
             raise RuntimeError("No trainable parameters — preprocessor has no parameters.")
-        if trainable_params > 50_000:
+        if trainable_params > self.max_trainable:
             raise RuntimeError(
-                f"Freezing failed: {trainable_params:,} trainable params (expected <50,000)."
+                f"Freezing failed: {trainable_params:,} trainable params "
+                f"(expected <{self.max_trainable:,})."
             )
 
         if self.debug_mode:

@@ -34,13 +34,15 @@ echo "=== Triggering CIFS mount ==="
 ls /cifs/Shares/WMGData/ > /dev/null 2>&1
 
 # ── Training ──────────────────────────────────────────────────
-echo "=== Starting exp20 ==="
+echo "=== Starting exp20_affine_lin ==="
 cd /networkhome/WMGDS/souval_g/neuRAWns_mmdet
-export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+# PREPEND repo to PYTHONPATH so this repo's modules always win the import
+# search (appending lets any stale pre-existing entry shadow them).
+export PYTHONPATH="$(pwd):${PYTHONPATH}"
 
-mim train mmdet configs/experiments/exp20_pack4ch_local_tonemap.py \
+mim train mmdet configs/experiments/exp20_affine_lin.py \
     --launcher none \
-    --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp20 \
+    --work-dir /networkhome/WMGDS/souval_g/neuRAWns_mmdet/work_dirs/exp20_affine_lin \
     --cfg-options \
         train_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
         val_dataloader.dataset.data_root=/networkhome/WMGDS/souval_g/data/ROD/yolo/ \
@@ -51,4 +53,4 @@ mim train mmdet configs/experiments/exp20_pack4ch_local_tonemap.py \
 
 # ── Cleanup ───────────────────────────────────────────────────
 kill $KRENEW_PID 2>/dev/null
-echo "=== exp20 finished ==="
+echo "=== exp20_affine_lin finished ==="

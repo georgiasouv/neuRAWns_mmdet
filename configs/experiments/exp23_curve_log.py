@@ -86,7 +86,7 @@ visualizer = dict(vis_backends=vis_backends)
 
 # ── Hooks ─────────────────────────────────────────────────────
 custom_hooks = [
-    dict(type='FreezeDetectorHook', debug_mode=False, check_updates=False, priority='VERY_HIGH'),
+    dict(type='FreezeDetectorHook', debug_mode=False, check_updates=False,max_trainable=200_000, priority='VERY_HIGH'),
     dict(type='EarlyStoppingHook', monitor='coco/bbox_mAP', patience=10, rule='greater', min_delta=0.001),
     dict(type='SaveBatchImagesHook', save_dir='sample_images', experiment_name=exp_name,
          save_raw=True, save_preprocessed=True),

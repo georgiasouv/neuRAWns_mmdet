@@ -7,6 +7,8 @@ from .label_remapping_hook import LabelRemappingHook
 from .save_batch_images_multi import SaveBatchImagesHook_Multi
 from .preprocessor_monitor_hook import PreprocessorMonitorHook
 from .val_predictions_hook import SaveValPredictionsHook
+from .ensemble_guards import NaNGuardHook, PreprocessorUpdateHook, DetectorInputContractHook
+from .preproc_observability import ToneParamDiagnosticHook, NormInputStatsHook, IdentityInitProbeHook
 
 __all__ = ['FreezeDetectorHook', 
            'FreezeMultiDetectorHook',
@@ -16,4 +18,9 @@ __all__ = ['FreezeDetectorHook',
            'ClassMappingValidationHook', 
            'LabelRemappingHook',
            'PreprocessorMonitorHook',
-           'SaveValPredictionsHook']
+           'SaveValPredictionsHook',
+           'NaNGuardHook', 
+           'PreprocessorUpdateHook', 
+           'DetectorInputContractHook',
+           'ToneParamDiagnosticHook', 'NormInputStatsHook', 'IdentityInitProbeHook'
+]

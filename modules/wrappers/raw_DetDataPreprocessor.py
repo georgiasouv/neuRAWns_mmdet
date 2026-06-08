@@ -8,14 +8,15 @@ class RAWDetDataPreprocessor(DetDataPreprocessor):
 
     def __init__(self, preprocessor_cfg: dict, **kwargs):
         super().__init__(**kwargs)
-        self.raw_preprocessor = MODELS.build(preprocessor_cfg)
+        self.raw_preprocessor = MODELS.build(preprocessor_cfg) if preprocessor_cfg is not None else None
 
     def forward(self, data: dict, training: bool = False) -> dict:
         data = self.cast_data(data)
         inputs = data['inputs']
         if isinstance(inputs, (list, tuple)):
             inputs = torch.stack(inputs, dim=0)
-            inputs = self.raw_preprocessor(inputs)
-            inputs = inputs * 255.0  
+            if self.raw_preprocessor is not None:
+                inputs = self.raw_preprocessor(inputs)
+                inputs = inputs * 255.0  
             data['inputs'] = list(inputs)
         return super().forward(data, training=training)
